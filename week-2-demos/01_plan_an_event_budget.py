@@ -1,4 +1,10 @@
 """Demo 1: Plan a solution before writing code, then follow a sequence."""
+"""
+Name: planning an event
+Date: 2026-09-21
+Authors: Sohaib Mohiuddin & Bob Marley
+Description: This program calculates the total cost of a pizza event and the estimated cost per student.
+"""
 
 # PROBLEM
 # A college club needs to estimate the cost of a pizza event.

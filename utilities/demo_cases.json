@@ -1,0 +1,893 @@
+{
+  "week-2-demos/01_plan_an_event_budget.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "$9.00"
+        ]
+      }
+    ]
+  },
+  "week-2-demos/02_choose_a_study_activity.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Work through a few practice problems."
+        ]
+      }
+    ]
+  },
+  "week-2-demos/03_repeat_until_a_savings_goal.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Weeks needed: 5"
+        ]
+      }
+    ]
+  },
+  "week-2-demos/04_calculate_an_average.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Average quiz score: 82.50"
+        ]
+      }
+    ]
+  },
+  "week-2-demos/05_search_a_backpack.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Items checked: 2"
+        ]
+      }
+    ]
+  },
+  "week-3-demos/01_explore_data_types.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Updated participant count: 20"
+        ]
+      }
+    ]
+  },
+  "week-3-demos/02_convert_keyboard_input.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "2\n15\n",
+        "contains": [
+          "Estimated pages read: 30"
+        ]
+      }
+    ]
+  },
+  "week-3-demos/03_use_arithmetic_operators.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Ordinary division: 3.625"
+        ]
+      }
+    ]
+  },
+  "week-3-demos/04_clean_and_format_text.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Name length: 9 characters"
+        ]
+      }
+    ]
+  },
+  "week-3-demos/05_print_a_receipt.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Amount due: $11.75"
+        ]
+      }
+    ]
+  },
+  "week-3-demos/06_explore_decimal_precision.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Exactly equal to 0.3: False",
+          "Exactly equal to 30 cents: True"
+        ]
+      }
+    ]
+  },
+  "week-4-demos/01_classify_a_score.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Ready for a challenge."
+        ]
+      }
+    ]
+  },
+  "week-4-demos/02_combine_conditions.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Preparation still needed: False"
+        ]
+      }
+    ]
+  },
+  "week-4-demos/03_nest_decisions.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Ticket price: $8.00"
+        ]
+      }
+    ]
+  },
+  "week-4-demos/04_validate_a_whole_number.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "12\n",
+        "contains": [
+          "Attendance recorded: 12"
+        ]
+      },
+      {
+        "stdin": "0\n",
+        "contains": [
+          "Attendance must be from 1 to 30."
+        ]
+      },
+      {
+        "stdin": "31\n",
+        "contains": [
+          "Attendance must be from 1 to 30."
+        ]
+      },
+      {
+        "stdin": "3.5\n",
+        "contains": [
+          "Enter a whole number"
+        ]
+      },
+      {
+        "stdin": "\n",
+        "contains": [
+          "Enter a whole number"
+        ]
+      },
+      {
+        "stdin": "1\n",
+        "contains": [
+          "Attendance recorded: 1"
+        ]
+      },
+      {
+        "stdin": "30\n",
+        "contains": [
+          "Attendance recorded: 30"
+        ]
+      }
+    ]
+  },
+  "week-4-demos/05_validate_an_order.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "2\nstudent\n",
+        "contains": [
+          "Order total: $26.00"
+        ]
+      },
+      {
+        "stdin": "0\n\n",
+        "contains": [
+          "Choose between 1 and 10 kits."
+        ]
+      },
+      {
+        "stdin": "two\n\n",
+        "contains": [
+          "Quantity must be a whole number."
+        ]
+      },
+      {
+        "stdin": "2\nwrong\n",
+        "contains": [
+          "Unknown discount code."
+        ]
+      },
+      {
+        "stdin": "2\n\n",
+        "contains": [
+          "Order total: $30.00"
+        ]
+      }
+    ]
+  },
+  "week-4-demos/06_short_circuit_validation.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "No enrolled students; attendance percentage is unavailable."
+        ]
+      }
+    ]
+  },
+  "week-5-demos/01_count_with_range.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Day 5: practise for 20 minutes."
+        ]
+      }
+    ]
+  },
+  "week-5-demos/02_trace_a_while_loop.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Sessions needed: 4"
+        ]
+      }
+    ]
+  },
+  "week-5-demos/03_accumulate_study_minutes.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "20\n30\n40\n",
+        "contains": [
+          "Daily average: 30.0 minutes"
+        ]
+      }
+    ]
+  },
+  "week-5-demos/04_use_a_sentinel.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "80\n90\ndone\n",
+        "contains": [
+          "Average: 85.00"
+        ]
+      },
+      {
+        "stdin": "done\n",
+        "contains": [
+          "No scores entered."
+        ]
+      },
+      {
+        "stdin": "bad\n-1\n101\n100\ndone\n",
+        "contains": [
+          "Average: 100.00"
+        ]
+      }
+    ]
+  },
+  "week-5-demos/05_repeat_a_menu.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "1\n9\n2\n0\n",
+        "contains": [
+          "Goodbye!"
+        ]
+      }
+    ]
+  },
+  "week-6-demos/01_retry_until_valid.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "two\n0\n7\n4\n",
+        "contains": [
+          "Group size accepted: 4"
+        ]
+      },
+      {
+        "stdin": "1\n",
+        "contains": [
+          "Group size accepted: 1"
+        ]
+      },
+      {
+        "stdin": "6\n",
+        "contains": [
+          "Group size accepted: 6"
+        ]
+      }
+    ]
+  },
+  "week-6-demos/02_nest_loops.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "R3S4"
+        ]
+      }
+    ]
+  },
+  "week-6-demos/03_use_break_and_continue.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Accepted count: 2"
+        ]
+      }
+    ]
+  },
+  "week-6-demos/04_find_an_off_by_one_error.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Correct total: 15"
+        ]
+      }
+    ]
+  },
+  "week-6-demos/05_midterm_practice.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "bad\n-1\n20\n30\n45\n0\n",
+        "contains": [
+          "Sessions reaching the target: 2"
+        ]
+      }
+    ]
+  },
+  "week-6-demos/06_track_running_extremes.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "bad\n-1\n30\n10\n45\ndone\n",
+        "contains": [
+          "Shortest: 10 minutes; longest: 45 minutes"
+        ]
+      },
+      {
+        "stdin": "done\n",
+        "contains": [
+          "No sessions entered."
+        ]
+      },
+      {
+        "stdin": "0\ndone\n",
+        "contains": [
+          "Shortest: 0 minutes; longest: 0 minutes"
+        ]
+      }
+    ]
+  },
+  "week-7-demos/01_review_data_and_formatting.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "135\n",
+        "contains": [
+          "Duration: 2h 15m"
+        ]
+      },
+      {
+        "stdin": "-1\n",
+        "contains": [
+          "Duration cannot be negative."
+        ]
+      },
+      {
+        "stdin": "abc\n",
+        "contains": [
+          "Enter a whole number."
+        ]
+      },
+      {
+        "stdin": "60\n",
+        "contains": [
+          "Duration: 1h 00m"
+        ]
+      }
+    ]
+  },
+  "week-7-demos/02_review_selection.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Trace and modify one demo."
+        ]
+      }
+    ]
+  },
+  "week-7-demos/03_review_loop_tracing.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Total points: 10"
+        ]
+      }
+    ]
+  },
+  "week-7-demos/04_review_validation.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "\nabcdefghijklmnopqrstu\nAlex\n",
+        "contains": [
+          "Welcome, Alex!"
+        ]
+      },
+      {
+        "stdin": "\n\n\n",
+        "contains": [
+          "No valid name entered."
+        ]
+      }
+    ]
+  },
+  "week-7-demos/05_review_event_capacity.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "3\n8\n7\n0\n",
+        "contains": [
+          "Final seats remaining: 0"
+        ]
+      },
+      {
+        "stdin": "bad\n-1\n0\n",
+        "contains": [
+          "Final seats remaining: 10"
+        ]
+      }
+    ]
+  },
+  "week-8-demos/01_index_and_update_a_list.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Updated scores: [70, 85, 90]"
+        ]
+      }
+    ]
+  },
+  "week-8-demos/02_add_and_remove_items.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Still to pack: ['pencil', 'notebook']"
+        ]
+      }
+    ]
+  },
+  "week-8-demos/03_traverse_and_summarize.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Total: 320; average: 80.00; highest: 90"
+        ]
+      }
+    ]
+  },
+  "week-8-demos/04_search_for_a_student.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "First match at index 1: Sam"
+        ]
+      }
+    ]
+  },
+  "week-8-demos/05_read_a_two_dimensional_list.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Student 3: total 135"
+        ]
+      }
+    ]
+  },
+  "week-8-demos/06_slice_and_sort_lists.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Sorted copy: [60, 70, 80, 90]",
+          "Return value of sort(): None"
+        ]
+      }
+    ]
+  },
+  "week-9-demos/01_define_and_call_functions.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Activity 2: write a function"
+        ]
+      }
+    ]
+  },
+  "week-9-demos/02_pass_arguments.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Sam, schedule 35 minutes of practice."
+        ]
+      }
+    ]
+  },
+  "week-9-demos/03_return_a_result.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Example setup cost: $60.00"
+        ]
+      }
+    ]
+  },
+  "week-9-demos/04_understand_local_scope.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Original: 70"
+        ]
+      }
+    ]
+  },
+  "week-9-demos/05_compose_small_functions.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "bad\n0\n11\n3\n",
+        "contains": [
+          "Booking total: $24.00"
+        ]
+      }
+    ]
+  },
+  "week-9-demos/06_import_a_helper_module.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "135 minutes = 2h 15m",
+          "60 minutes = 1h 00m"
+        ]
+      }
+    ]
+  },
+  "week-10-demos/01_summarize_a_list_with_functions.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Average: 80.00"
+        ]
+      }
+    ]
+  },
+  "week-10-demos/02_write_a_search_function.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Found at index 0."
+        ]
+      }
+    ]
+  },
+  "week-10-demos/03_compare_mutation_and_copying.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Fresh original: [60, 70]; returned copy: [65, 75]"
+        ]
+      }
+    ]
+  },
+  "week-10-demos/04_filter_scores.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Selected scores: [80, 95, 80]"
+        ]
+      }
+    ]
+  },
+  "week-10-demos/05_summarize_rows.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Student 3: 0"
+        ]
+      }
+    ]
+  },
+  "week-10-demos/06_trace_selection_sort.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Sorted copy: [60, 70, 80, 90]",
+          "Original: [80, 60, 90, 70]"
+        ]
+      }
+    ]
+  },
+  "week-11-demos/01_open_a_window.py": {
+    "mode": "gui"
+  },
+  "week-11-demos/02_read_a_name.py": {
+    "mode": "gui"
+  },
+  "week-11-demos/03_convert_temperature.py": {
+    "mode": "gui"
+  },
+  "week-11-demos/04_choose_an_activity.py": {
+    "mode": "gui"
+  },
+  "week-11-demos/05_build_a_registration_form.py": {
+    "mode": "gui"
+  },
+  "week-12-demos/01_manage_counter_state.py": {
+    "mode": "gui"
+  },
+  "week-12-demos/02_manage_a_listbox.py": {
+    "mode": "gui"
+  },
+  "week-12-demos/03_validate_and_clear_a_form.py": {
+    "mode": "gui"
+  },
+  "week-12-demos/04_make_a_resizable_layout.py": {
+    "mode": "gui"
+  },
+  "week-12-demos/05_build_a_score_tracker.py": {
+    "mode": "gui"
+  },
+  "week-12-demos/06_schedule_a_countdown.py": {
+    "mode": "gui"
+  },
+  "week-13-demos/01_run_table_driven_checks.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "All conversion checks passed."
+        ]
+      }
+    ]
+  },
+  "week-13-demos/02_check_validation_boundaries.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "All validation checks passed."
+        ]
+      }
+    ]
+  },
+  "week-13-demos/03_use_unittest.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Ran 5 tests",
+          "OK"
+        ]
+      }
+    ]
+  },
+  "week-13-demos/04_capture_a_regression.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Ran 5 tests",
+          "OK"
+        ]
+      }
+    ]
+  },
+  "week-13-demos/05_rehearse_a_user_acceptance_scenario.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "PASS: add, reject without changes, reset, and add again."
+        ]
+      }
+    ]
+  },
+  "week-13-demos/06_test_the_actual_tracker_rules.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Ran 6 tests",
+          "OK"
+        ]
+      }
+    ]
+  },
+  "week-14-demos/01_review_data_and_selection.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "15\n",
+        "contains": [
+          "Printing charge: $1.25"
+        ]
+      },
+      {
+        "stdin": "0\n",
+        "contains": [
+          "Printing charge: $0.00"
+        ]
+      },
+      {
+        "stdin": "10\n",
+        "contains": [
+          "Printing charge: $1.00"
+        ]
+      },
+      {
+        "stdin": "11\n",
+        "contains": [
+          "Printing charge: $1.05"
+        ]
+      },
+      {
+        "stdin": "1000\n",
+        "contains": [
+          "Printing charge: $50.50"
+        ]
+      },
+      {
+        "stdin": "1001\n",
+        "contains": [
+          "Choose a page count from 0 to 1000."
+        ]
+      },
+      {
+        "stdin": "text\n",
+        "contains": [
+          "Enter a whole number."
+        ]
+      }
+    ]
+  },
+  "week-14-demos/02_review_iteration.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Days needed: 4"
+        ]
+      }
+    ]
+  },
+  "week-14-demos/03_review_arrays_and_functions.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "First highest score: 95 at index 1"
+        ]
+      }
+    ]
+  },
+  "week-14-demos/04_review_testing_and_debugging.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "",
+        "contains": [
+          "Ran 4 tests",
+          "OK"
+        ]
+      }
+    ]
+  },
+  "week-14-demos/05_integrate_a_study_tracker.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "stdin": "2\n1\n20\n1\n40\n2\n1\nbad\n1\n-1\n3\n2\n1\n0\n2\n0\n",
+        "contains": [
+          "Average: 30.0 minutes"
+        ]
+      },
+      {
+        "stdin": "9\n0\n",
+        "contains": [
+          "Choose 1, 2, 3, or 0."
+        ]
+      }
+    ]
+  }
+}
