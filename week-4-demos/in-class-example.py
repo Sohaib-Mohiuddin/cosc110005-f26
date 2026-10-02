@@ -78,3 +78,5 @@ if input1 == input2 and sum > f:
     print(f'All conditions satisfied')
 else:
     print(f'NO conditions satisfied')
+
+list1 = ['Online', 'Hybrid']
