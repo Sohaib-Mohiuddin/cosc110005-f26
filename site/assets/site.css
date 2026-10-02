@@ -7,3 +7,4 @@
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 @media print{.sidebar,.topbar,.toolbar,.footer,.run-help,.pager{display:none}.shell{margin:0}.content{max-width:none;padding:0}.source,.source-header{background:white;color:black}.source pre{white-space:pre-wrap}.tok-comment,.tok-string,.tok-keyword,.tok-number{color:black}.source-header button{display:none}}
 @media(max-width:800px){.sidebar{visibility:hidden}.sidebar.open{visibility:visible}}
+.sidebar{overflow-y:auto}#source-code{white-space:normal}.code-line{white-space:pre}.source pre{font-size:13px}@media(max-width:560px){.source pre{font-size:12px}}
