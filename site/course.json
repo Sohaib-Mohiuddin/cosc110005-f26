@@ -1,0 +1,14 @@
+{
+  "code": "COSC1100-05",
+  "name": "Introduction to programming",
+  "term": "Fall 2026",
+  "instructor": "Sohaib Mohiuddin",
+  "repository": "https://github.com/Sohaib-Mohiuddin/cosc110005-f26",
+  "branch": "main",
+  "weeks": {
+    "2": {"title": "Think like a programmer", "description": "Break a problem into steps. Explore sequences, decisions, and repetition.", "tags": ["Algorithms", "Problem solving"]},
+    "3": {"title": "Working with data", "description": "Give your programs something to work with: numbers, text, and user input.", "tags": ["Variables", "Strings", "Arithmetic"]},
+    "4": {"title": "Making decisions", "description": "Use conditions to choose a path and check that input makes sense.", "tags": ["Selection", "Booleans", "Validation"]},
+    "5": {"title": "Learning to loop", "description": "Repeat useful work with for loops, while loops, accumulators, and menus.", "tags": ["Iteration", "Loops", "Sentinels"]}
+  }
+}
