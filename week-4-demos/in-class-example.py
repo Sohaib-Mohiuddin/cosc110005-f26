@@ -12,6 +12,8 @@ h = 'I'
 y = math.pi
 print(f'{y:.10f}')
 
+# Some change for github workflow
+
 # Situation 1: Check if user input is equal a, b, or c
 """
 user_input = input("Enter a name: ")
@@ -76,3 +78,5 @@ if input1 == input2 and sum > f:
     print(f'All conditions satisfied')
 else:
     print(f'NO conditions satisfied')
+
+list1 = ['Online', 'Hybrid']
