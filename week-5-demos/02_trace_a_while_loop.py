@@ -19,8 +19,8 @@ if problems_per_session <= 0:
     print("Complete at least one problem per session.")
 else:
     while completed < target:
-        completed = completed + problems_per_session
-        sessions = sessions + 1
+        completed += problems_per_session
+        sessions += 1
         print(f"Session {sessions}: {completed} problems completed")
     print(f"Sessions needed: {sessions}")
 

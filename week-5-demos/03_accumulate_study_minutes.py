@@ -1,5 +1,4 @@
 """Demo 3: Accumulate values entered in a loop."""
-
 # PROBLEM
 # Total three days of study time. Assume valid, nonnegative integer entries.
 #
@@ -15,7 +14,7 @@ total_minutes = 0
 day_count = 3
 for day in range(1, day_count + 1):
     minutes = int(input(f"Minutes for day {day}: "))
-    total_minutes = total_minutes + minutes
+    total_minutes += minutes
     print(f"Running total: {total_minutes}")
 average_minutes = total_minutes / day_count
 print(f"Daily average: {average_minutes:.1f} minutes")
