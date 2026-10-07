@@ -14,6 +14,7 @@ You can also add files locally, commit, and push as usual. The build reads the l
 | --- | --- |
 | Weekly demonstrations, companion files, notes | `week-N-demos/` |
 | Exercise handouts and starter code | `in-class-exercise-N/` |
+| Midterm practice exercises and study guide | `Midterm Preparation/` |
 | Tools and worksheets | `utilities/` |
 | Other course materials | `materials/` (create it when needed) |
 | First examples | Root-level `.py` files |

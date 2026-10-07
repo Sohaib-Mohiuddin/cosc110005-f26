@@ -14,6 +14,7 @@ Browse by week, search topics and code, read highlighted Python examples, downlo
 | [Week 3](week-3-demos/README.md) | Variables, data types, arithmetic, and strings |
 | [Week 4](week-4-demos/README.md) | Selection, Boolean expressions, and validation |
 | [Week 5](week-5-demos/README.md) | Loops, accumulators, sentinels, and menus |
+| [Midterm Preparation](Midterm%20Preparation/README.md) | 20 starter exercises covering weeks 2–5, with requirements and self-check cases |
 | [Exercise 2](in-class-exercise-2/) | Numeric and string data |
 | [Exercise 3](in-class-exercise-3/) | Selection |
 | [Classroom utilities](utilities/README.md) | Demo launcher, trace tables, and user-testing worksheet |
@@ -34,7 +35,7 @@ Numbered weekly demonstrations include pseudocode, desk checks, and classroom va
 
 ## Add new course content
 
-Upload or commit Python files, notes, or handouts to `week-N-demos/`, `in-class-exercise-N/`, `utilities/`, or `materials/`. Keep companion files with the demos that use them. Push to `main` or merge a pull request; GitHub Actions checks, rebuilds, and publishes the site automatically.
+Upload or commit Python files, notes, or handouts to `week-N-demos/`, `in-class-exercise-N/`, `Midterm Preparation/`, `utilities/`, or `materials/`. Keep companion files with the demos that use them. Push to `main` or merge a pull request; GitHub Actions checks, rebuilds, and publishes the site automatically.
 
 See the [instructor guide on the site](https://sohaib-mohiuddin.github.io/cosc110005-f26/instructor.html) or the [website maintenance guide](site/README.md) for publishing, supported formats, and local previews.
 

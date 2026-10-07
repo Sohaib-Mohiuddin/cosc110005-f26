@@ -76,14 +76,15 @@ class CourseSiteTests(unittest.TestCase):
     def test_new_week_nested_files_and_exclusions(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            for name in ['week-6-demos/01_new.py', 'week-6-demos/examples/a & b.py', 'week-6-demos/.private/notes.md', 'week-6-demos/__pycache__/cached.py', 'materials/lecture 1.pdf', '.env', 'site/private.py', 'in-class-exercise-4/task.txt']:
+            for name in ['week-6-demos/01_new.py', 'week-6-demos/examples/a & b.py', 'week-6-demos/.private/notes.md', 'week-6-demos/__pycache__/cached.py', 'materials/lecture 1.pdf', '.env', 'site/private.py', 'in-class-exercise-4/task.txt', 'Midterm Preparation/01_practice.py']:
                 path = root / name
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('print("hi")', encoding='utf-8')
             files = discover(root)
-            self.assertEqual(len(files), 4)
+            self.assertEqual(len(files), 5)
             self.assertEqual({file['week'] for file in files}, {6, None})
             self.assertTrue(any('a%20%26%20b.py' in file['url'] for file in files))
+            self.assertTrue(any('Midterm%20Preparation/01_practice.py.html' in file['url'] for file in files))
 
     def test_highlight_preserves_source_and_escapes_html(self):
         source = '# <script>alert("hi")</script>\ntext = "<hello>"\nprint(text)\n'

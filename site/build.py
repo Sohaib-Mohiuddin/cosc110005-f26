@@ -84,7 +84,7 @@ def discover(root):
     files = []
     candidates = list(root.glob('*.py'))
     for folder in root.iterdir():
-        if folder.is_dir() and (re.fullmatch(r'week-\d+-demos', folder.name) or re.fullmatch(r'in-class-exercise-\d+', folder.name) or folder.name in {'utilities', 'materials'}):
+        if folder.is_dir() and (re.fullmatch(r'week-\d+-demos', folder.name) or re.fullmatch(r'in-class-exercise-\d+', folder.name) or folder.name in {'utilities', 'materials', 'Midterm Preparation'}):
             candidates.extend(folder.rglob('*'))
     for path in sorted(candidates, key=lambda p: natural(p.relative_to(root).as_posix())):
         relative = path.relative_to(root)
@@ -236,6 +236,8 @@ class Site:
             selected = active == key
             return f'<a class="nav-link{" active" if selected else ""}" href="{self.link(target, current)}"{chr(32) + "aria-current=\"page\"" if selected else ""}>{symbol}{label}</a>'
         menu = nav('index.html', 'Course overview', icon('grid'), 'overview') + nav('getting-started.html', 'Getting started', icon('code'), 'start') + nav('resources.html', 'Exercises & resources', icon('file'), 'resources') + nav('links.html', 'Course links', icon('book'), 'links')
+        if 'Midterm Preparation/README.md' in self.by_path:
+            menu += nav(self.by_path['Midterm Preparation/README.md']['url'], 'Midterm preparation', icon('book'), 'midterm')
         menu += f'<a class="nav-link" href="{prefix}index.html#weekly-materials">{icon("search")}Search materials</a>'
         weekly = ''.join(nav(f'weeks/week-{week}.html', f'Week {week:02d}', f'<span class="week-dot">{week:02d}</span>', f'week-{week}') for week in self.weeks)
         page = f'''<!doctype html>
@@ -304,7 +306,7 @@ print(message)
     def resources(self):
         current = 'resources.html'
         body = self.breadcrumbs(current, 'Exercises & resources') + '<div class="page-heading"><p class="eyebrow">PRACTICE MAKES PROGRESS</p><h1>Try it. Trace it. Understand it.</h1><p>Classroom exercises, reusable worksheets, and the tools that help you explore the code.</p></div>'
-        groups = [('exercises', 'In-class exercises', lambda p: p.startswith('in-class-exercise-')), ('worksheets', 'Worksheets & classroom tools', lambda p: p.startswith('utilities/')), ('more', 'More to explore', lambda p: not p.startswith(('in-class-exercise-', 'utilities/')))]
+        groups = [('midterm', 'Midterm preparation · Weeks 2–5', lambda p: p.startswith('Midterm Preparation/')), ('exercises', 'In-class exercises', lambda p: p.startswith('in-class-exercise-')), ('worksheets', 'Worksheets & classroom tools', lambda p: p.startswith('utilities/')), ('more', 'More to explore', lambda p: not p.startswith(('Midterm Preparation/', 'in-class-exercise-', 'utilities/')))]
         for anchor, label, predicate in groups:
             items = [item for item in self.files if item['week'] is None and predicate(item['path'])]
             body += f'<section id="{anchor}"><div class="section-heading"><h2>{label}</h2></div>'
@@ -343,6 +345,10 @@ print(message)
         else:
             body += '<div class="prose"><h2>Ready to explore?</h2><p>Download this material to open it with the appropriate app, or view it on GitHub.</p></div>'
         siblings = [entry for entry in self.files if entry['week'] == week and entry['kind'] == 'PY'] if item['kind'] == 'PY' else []
+        if source.startswith('Midterm Preparation/'):
+            siblings = [entry for entry in siblings if entry['path'].startswith('Midterm Preparation/')]
+        else:
+            siblings = [entry for entry in siblings if not entry['path'].startswith('Midterm Preparation/')]
         if item in siblings:
             index = siblings.index(item)
             body += '<nav class="pager" aria-label="More examples">'
@@ -351,7 +357,7 @@ print(message)
             if index + 1 < len(siblings):
                 body += f'<a href="{self.link(siblings[index+1]["url"], current)}">{esc(siblings[index+1]["title"])} →</a>'
             body += '</nav>'
-        self.write(current, item['title'], body, f'week-{week}' if week else 'resources')
+        self.write(current, item['title'], body, 'midterm' if source.startswith('Midterm Preparation/') else f'week-{week}' if week else 'resources')
 
     def guides(self):
         repo = esc(self.config['repository'])
