@@ -8,3 +8,13 @@
 @media print{.sidebar,.topbar,.toolbar,.footer,.run-help,.pager{display:none}.shell{margin:0}.content{max-width:none;padding:0}.source,.source-header{background:white;color:black}.source pre{white-space:pre-wrap}.tok-comment,.tok-string,.tok-keyword,.tok-number{color:black}.source-header button{display:none}}
 @media(max-width:800px){.sidebar{visibility:hidden}.sidebar.open{visibility:visible}}
 .sidebar{overflow-y:auto}#source-code{white-space:normal}.code-line{white-space:pre}.source pre{font-size:13px}@media(max-width:560px){.source pre{font-size:12px}}
+
+/* Keep search and shared references usable on narrow screens. */
+.search-controls{display:flex;align-items:center;flex-wrap:wrap;gap:10px;justify-content:flex-end}
+.type-filter select{font:inherit;font-size:12px;color:var(--ink);background:white;border:1px solid var(--line);border-radius:8px;padding:10px;max-width:100%}
+.type-filter select:focus-visible{outline:3px solid #b67b09;outline-offset:4px}
+.course-links-card{margin-top:16px}
+.resource-card>span:not(.resource-icon):not(.arrow){min-width:0;overflow-wrap:anywhere}
+#weekly-materials{scroll-margin-top:20px}
+@media(max-width:1100px){.section-heading:has(.search-controls){align-items:flex-start;flex-direction:column}.search-controls{justify-content:flex-start}}
+@media(max-width:560px){.search-controls{width:100%}.search-controls .search-box{flex-basis:100%}}

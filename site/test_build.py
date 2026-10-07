@@ -6,7 +6,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
-from build import ROOT, Site, discover, highlight_python
+from build import ROOT, Site, discover, highlight_python, read_links
 
 
 class Links(HTMLParser):
@@ -29,6 +29,50 @@ class Links(HTMLParser):
 
 
 class CourseSiteTests(unittest.TestCase):
+    def test_course_links_formats_comments_and_duplicates(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'links.txt'
+            self.assertEqual(read_links(path), [])
+            path.write_text('\ufeff# References\n\nhttps://example.org/plain\n'
+                            'Python & practice | https://example.org/?a=1&b=2\n'
+                            '[A labelled reference](https://example.org/guide#topic)\n'
+                            'Duplicate | https://example.org/plain\n', encoding='utf-8')
+            self.assertEqual(read_links(path), [
+                {'title': 'example.org', 'url': 'https://example.org/plain'},
+                {'title': 'Python & practice', 'url': 'https://example.org/?a=1&b=2'},
+                {'title': 'A labelled reference', 'url': 'https://example.org/guide#topic'},
+            ])
+            path.write_text('# No links yet\n\n', encoding='utf-8')
+            self.assertEqual(read_links(path), [])
+
+    def test_course_links_reject_invalid_destinations_with_line_number(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'links.txt'
+            for url in ['javascript:alert(1)', '//example.org', 'https://',
+                        'https://example.org/a b', 'https://[invalid',
+                        'https://example.org:bad', 'https://user:secret@example.org',
+                        'https://example.org\\other', 'not a link']:
+                with self.subTest(url=url):
+                    path.write_text('# References\nBad | ' + url, encoding='utf-8')
+                    with self.assertRaisesRegex(ValueError, 'links.txt:2:'):
+                        read_links(path)
+
+    def test_course_links_page_and_instructor_navigation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            site = Site(ROOT, Path(directory))
+            site.course_links = [{'title': '<Study> & practice', 'url': 'https://example.org/?a=1&b=2'}]
+            site.links()
+            page = (site.out / 'links.html').read_text(encoding='utf-8')
+            self.assertIn('&lt;Study&gt; &amp; practice', page)
+            parser = Links(); parser.feed(page)
+            self.assertIn('https://example.org/?a=1&b=2', parser.links)
+            self.assertNotIn('instructor.html', parser.links)
+            site.course_links = []
+            site.links()
+            self.assertIn('No course links have been shared yet', (site.out / 'links.html').read_text())
+            site.guides()
+            self.assertTrue((site.out / 'instructor.html').exists())
+
     def test_new_week_nested_files_and_exclusions(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -63,6 +107,7 @@ class CourseSiteTests(unittest.TestCase):
             self.assertEqual(len(list((output / 'view').rglob('*.html'))), len(site.files))
             for page in output.rglob('*.html'):
                 parser = Links(); parser.feed(page.read_text(encoding='utf-8'))
+                self.assertFalse(any(urlsplit(link).path.endswith('instructor.html') for link in parser.links))
                 for link in parser.links:
                     parts = urlsplit(link)
                     if parts.scheme or parts.netloc:

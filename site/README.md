@@ -17,6 +17,27 @@ You can also add files locally, commit, and push as usual. The build reads the l
 | Tools and worksheets | `utilities/` |
 | Other course materials | `materials/` (create it when needed) |
 | First examples | Root-level `.py` files |
+| Shared websites and references | Root-level `links.txt` |
+
+## Share course links
+
+Add one entry per line to `links.txt`, then commit and push. The **Course links** page reads this file automatically and is accessible from the sidebar and overview. Supported formats:
+
+```text
+https://docs.python.org/3/
+Python tutorial | https://docs.python.org/3/tutorial/
+[Python downloads](https://www.python.org/downloads/)
+```
+
+Blank lines and lines beginning with `#` are ignored. Labels are optional; a plain URL displays its host as the title. Links keep their file order, and duplicate URLs appear only once. Use complete `http://` or `https://` URLs without spaces or embedded credentials. Invalid entries fail the build with the filename and line number so a typo can be corrected before publishing. An empty or missing file displays a friendly empty state. Links work without JavaScript and open in the same tab.
+
+The instructor guide remains at `instructor.html`, accessible by entering its address directly. It is no longer linked from student navigation.
+
+## Find course materials
+
+**Search materials** in the sidebar goes to the overview search. Students can combine keywords with a file-type filter or select a type alone, then use **Clear search** to return to browsing. The URL stores the query and file type, allowing searches to be bookmarked or shared and restored with the browser’s Back button. Search controls appear only when JavaScript is available.
+
+## Organize course files
 
 Subfolders are supported. Number demos as `01_topic.py`, `02_topic.py`, etc. New weeks appear automatically when supported files exist. Give a new week a `README.md` beginning with `# Week 6: Your topic` for an automatic title. Optionally add the week to `site/course.json` to customize its title, description, and topic tags. Only weeks with actual files are listed.
 
@@ -36,7 +57,7 @@ python -m http.server 8000 --directory _site
 
 On Windows use `py` in place of `python` if needed. Visit <http://localhost:8000>. The builder requires an empty output directory so removed lessons cannot remain in a subsequent deployment. For another local build, delete only the generated `_site` directory or use `python site/build.py --output another-preview` with a fresh directory. Do not commit generated output.
 
-Tests verify automatic discovery, future weeks, nested filenames with spaces, safe source highlighting, byte-identical downloads, and every generated internal file/anchor link. GitHub runs these checks on pull requests and before every deployment. The builder never executes the classroom programs.
+Tests verify automatic discovery, future weeks, nested filenames with spaces, safe source highlighting, byte-identical downloads, course link parsing and rendering, instructor navigation, and every generated internal file/anchor link. GitHub runs these checks on pull requests and before every deployment. The builder never executes the classroom programs.
 
 ## GitHub Pages
 

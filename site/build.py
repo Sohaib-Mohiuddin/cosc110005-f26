@@ -46,6 +46,39 @@ def title_for(path):
     return re.sub(r'^\d+[_-]?', '', path.stem).replace('_', ' ').replace('-', ' ').capitalize()
 
 
+def read_links(path):
+    """Read public course links without fetching them; report malformed lines early."""
+    if not path.exists():
+        return []
+    links, seen = [], set()
+    for number, line in enumerate(path.read_text(encoding='utf-8-sig').splitlines(), 1):
+        line = line.strip()
+        if not line or line.startswith('#'):
+            continue
+        markdown = re.fullmatch(r'\[([^\]]+)\]\((.+)\)', line)
+        if markdown:
+            label, url = markdown.groups()
+        elif '|' in line:
+            label, url = line.split('|', 1)
+        else:
+            label, url = '', line
+        label, url = label.strip(), url.strip()
+        try:
+            parts = urlsplit(url)
+            valid = (parts.scheme in {'http', 'https'} and parts.hostname
+                     and not parts.username and not parts.password
+                     and not re.search(r'[\s\x00-\x1f\x7f\\]', url))
+            parts.port  # Validate the port as well as the host.
+        except ValueError:
+            valid = False
+        if not valid:
+            raise ValueError(f'{path.name}:{number}: expected an http(s) URL, Label | URL, or [Label](URL)')
+        if url not in seen:
+            links.append({'title': label or parts.netloc, 'url': url})
+            seen.add(url)
+    return links
+
+
 def discover(root):
     """Only publish course folders and root Python examples; ignore hidden/private build files."""
     files = []
@@ -103,6 +136,7 @@ class Site:
     def __init__(self, root, out):
         self.root, self.out = root, out
         self.config = json.loads((root / 'site/course.json').read_text(encoding='utf-8'))
+        self.course_links = read_links(root / 'links.txt')
         self.files = discover(root)
         self.by_path = {item['path']: item for item in self.files}
         self.weeks = sorted({item['week'] for item in self.files if item['week'] is not None})
@@ -201,13 +235,14 @@ class Site:
         def nav(target, label, symbol, key):
             selected = active == key
             return f'<a class="nav-link{" active" if selected else ""}" href="{self.link(target, current)}"{chr(32) + "aria-current=\"page\"" if selected else ""}>{symbol}{label}</a>'
-        menu = nav('index.html', 'Course overview', icon('grid'), 'overview') + nav('getting-started.html', 'Getting started', icon('code'), 'start') + nav('resources.html', 'Exercises & resources', icon('file'), 'resources')
+        menu = nav('index.html', 'Course overview', icon('grid'), 'overview') + nav('getting-started.html', 'Getting started', icon('code'), 'start') + nav('resources.html', 'Exercises & resources', icon('file'), 'resources') + nav('links.html', 'Course links', icon('book'), 'links')
+        menu += f'<a class="nav-link" href="{prefix}index.html#weekly-materials">{icon("search")}Search materials</a>'
         weekly = ''.join(nav(f'weeks/week-{week}.html', f'Week {week:02d}', f'<span class="week-dot">{week:02d}</span>', f'week-{week}') for week in self.weeks)
         page = f'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Python demonstrations, weekly materials, and practice for {esc(self.config['code'])}. Read the code, try it yourself, and learn one step at a time."><meta name="theme-color" content="#23674b"><title>{esc(title)} · {esc(self.config['code'])}</title><link rel="icon" href="{prefix}assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="{prefix}assets/site.css"><script src="{prefix}assets/site.js" defer></script></head>
 <body data-root="{prefix}"><a class="skip" href="#main">Skip to content</a>
 <aside class="sidebar" id="course-navigation" aria-label="Course navigation"><a class="brand" href="{prefix}index.html"><span class="brand-icon">&lt;/&gt;</span><span>{esc(self.config['code'])}<small>THE PYTHON CLASSROOM</small></span></a><p class="nav-label">YOUR CLASSROOM</p><nav aria-label="Main">{menu}</nav><p class="nav-label weeks-label">WEEKLY MATERIALS</p><nav aria-label="Weeks">{weekly}</nav><div class="sidebar-bottom"><div class="sidebar-note"><strong>Small steps. Real progress.</strong>Read it. Trace it. Run it.<br>Then make it your own.</div><a href="{esc(self.config['repository'])}">{icon('branch')} View repository <span aria-hidden="true">↗</span></a></div></aside>
-<div class="shell"><header class="topbar"><button class="menu-toggle" aria-label="Toggle navigation" aria-controls="course-navigation" aria-expanded="false">{icon('menu')}</button><span><strong>Course materials</strong><span class="course-name"> &nbsp; / &nbsp; {esc(self.config['name'])}</span></span><span class="term"><span class="status-dot"></span>{esc(self.config['term'])}</span></header><main class="content" id="main">{body}<footer class="footer"><span>{esc(self.config['code'])} · {esc(self.config['term'])} · {esc(self.config['instructor'])}</span><span><a href="{prefix}instructor.html">For the instructor</a> &nbsp; · &nbsp; <a href="{esc(self.config['repository'])}">Made for learning, shared on GitHub ↗</a></span></footer></main></div></body></html>'''
+<div class="shell"><header class="topbar"><button class="menu-toggle" aria-label="Toggle navigation" aria-controls="course-navigation" aria-expanded="false">{icon('menu')}</button><span><strong>Course materials</strong><span class="course-name"> &nbsp; / &nbsp; {esc(self.config['name'])}</span></span><span class="term"><span class="status-dot"></span>{esc(self.config['term'])}</span></header><main class="content" id="main">{body}<footer class="footer"><span>{esc(self.config['code'])} · {esc(self.config['term'])} · {esc(self.config['instructor'])}</span><span><a href="{esc(self.config['repository'])}">Made for learning, shared on GitHub ↗</a></span></footer></main></div></body></html>'''
         path = self.out / current
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(page, encoding='utf-8')
@@ -226,6 +261,7 @@ class Site:
             shutil.copyfile(self.root / item['path'], dest)
         self.home()
         self.resources()
+        self.links()
         self.guides()
         for week in self.weeks:
             self.week(week)
@@ -247,13 +283,14 @@ class Site:
             info = self.week_info(item['week']) if item['week'] else {'title': '', 'tags': []}
             search = ' '.join([item['title'], item['path'], item['text'], info['title'], *info['tags'], f'week {item["week"]}' if item['week'] else 'resources']).lower()
             entries.append({key: item[key] for key in ['title', 'path', 'kind', 'url']} | {'search': search})
+        kinds = ''.join(f'<option value="{esc(kind)}">{esc(kind)}</option>' for kind in sorted({item['kind'] for item in self.files}))
         data = json.dumps(entries, ensure_ascii=False).replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026')
         self.write('index.html', 'Your Python classroom', f'''<section class="hero"><div><p class="eyebrow">A LITTLE CURIOSITY. A LOT OF POSSIBILITY.</p><h1>Your next line<br>starts here<span style="color:#7d9a56">.</span></h1><p>Your home for Python examples, classroom exercises, and those “oh, now I get it” moments. Pick a week and explore.</p><div class="hero-actions"><a class="button primary" href="#weekly-materials">Explore the materials {icon('arrow')}</a><a class="button-link" href="getting-started.html">New to Python? Start here ↗</a></div></div><div class="hello-art" aria-label="Python example: print Hello, world!"><div class="art-grid"></div><div class="code-window"><div class="code-top"><i></i><i></i><i></i><span>your_first_program.py</span></div><pre><span class="dim"># Every programmer starts somewhere.</span>
 <span class="yellow">message</span> = <span class="yellow">"Hello, world!"</span>
 print(message)
 <span class="output">&gt; Hello, world!</span></pre></div><span class="art-note">One line at a time ✦</span></div></section>
 <div class="stats"><span><strong>{len(self.weeks):02d}</strong> weeks to explore</span><span><strong>{python_count:02d}</strong> Python files</span><span><strong>{pdf_count:02d}</strong> exercise handouts</span><span class="grow">A place to learn by doing.</span></div>
-<section aria-labelledby="weekly-materials"><div class="section-heading"><div><h2 id="weekly-materials">Find your next lesson</h2><p>Follow along in class, or revisit at your own pace.</p></div><label class="search-box">{icon('search')}<span class="visually-hidden">Search all course materials</span><input id="material-search" type="search" placeholder="Search topics or code…" autocomplete="off"></label></div><p class="search-count" id="search-count" role="status" aria-live="polite"></p><div id="search-results" class="search-results" hidden></div><div id="browse-content"><div class="week-grid">{''.join(cards)}</div><div class="section-heading"><h2>A little extra practice</h2><a class="button-link" href="resources.html">All resources {icon('arrow')}</a></div><div class="resource-grid"><a class="resource-card" href="resources.html#exercises"><span class="resource-icon">{icon('file')}</span><span><strong>In-class exercises</strong><small>Put the concepts into practice.</small></span><span class="arrow">↗</span></a><a class="resource-card" href="resources.html#worksheets"><span class="resource-icon">{icon('book')}</span><span><strong>Worksheets & tools</strong><small>Trace your thinking. Test your code.</small></span><span class="arrow">↗</span></a></div><div class="callout">{icon('branch')}<div><strong>The code is yours to explore.</strong><p>See how this course is organized on GitHub, then download a copy and try it yourself.</p></div><a class="button-link" href="{esc(self.config['repository'])}">Open GitHub ↗</a></div></div></section><script type="application/json" id="search-data">{data}</script><noscript><p class="empty">Search needs JavaScript. All weekly materials and downloads remain available through the links on this page.</p></noscript>''')
+<section aria-labelledby="weekly-materials"><div class="section-heading"><div><h2 id="weekly-materials">Find your next lesson</h2><p>Follow along in class, or revisit at your own pace.</p></div><div class="search-controls" hidden><label class="search-box">{icon('search')}<span class="visually-hidden">Search all course materials</span><input id="material-search" type="search" placeholder="Search topics or code…" autocomplete="off" aria-controls="search-results"></label><label class="type-filter"><span class="visually-hidden">Filter by file type</span><select id="material-kind" aria-controls="search-results"><option value="">All file types</option>{kinds}</select></label><button class="button small" id="clear-search" type="button" hidden>Clear search</button></div></div><p class="search-count" id="search-count" role="status" aria-live="polite"></p><div id="search-results" class="search-results" hidden></div><div id="browse-content"><div class="week-grid">{''.join(cards)}</div><div class="section-heading"><h2>A little extra practice</h2><a class="button-link" href="resources.html">All resources {icon('arrow')}</a></div><div class="resource-grid"><a class="resource-card" href="resources.html#exercises"><span class="resource-icon">{icon('file')}</span><span><strong>In-class exercises</strong><small>Put the concepts into practice.</small></span><span class="arrow">↗</span></a><a class="resource-card" href="resources.html#worksheets"><span class="resource-icon">{icon('book')}</span><span><strong>Worksheets & tools</strong><small>Trace your thinking. Test your code.</small></span><span class="arrow">↗</span></a></div><a class="resource-card course-links-card" href="links.html"><span class="resource-icon">{icon("book")}</span><span><strong>Course links</strong><small>Websites and references shared in class.</small></span><span class="arrow" aria-hidden="true">↗</span></a><div class="callout">{icon('branch')}<div><strong>The code is yours to explore.</strong><p>See how this course is organized on GitHub, then download a copy and try it yourself.</p></div><a class="button-link" href="{esc(self.config['repository'])}">Open GitHub ↗</a></div></div></section><script type="application/json" id="search-data">{data}</script><noscript><p class="empty">Search needs JavaScript. All weekly materials and downloads remain available through the links on this page.</p></noscript>''')
 
     def week(self, week):
         current = f'weeks/week-{week}.html'
@@ -274,6 +311,17 @@ print(message)
             body += '<div class="list">' + ''.join(self.row(item, current) for item in items) + '</div>' if items else '<p class="empty">Materials will appear here when they are added.</p>'
             body += '</section>'
         self.write(current, 'Exercises & resources', body, 'resources')
+
+    def links(self):
+        current = 'links.html'
+        body = self.breadcrumbs(current, 'Course links') + '<div class="page-heading"><p class="eyebrow">KEEP THESE HANDY</p><h1>Course links</h1><p>Useful websites and references shared in class, together in one place.</p></div>'
+        if self.course_links:
+            body += '<div class="list">' + ''.join(
+                f'<a class="file-row" href="{esc(item["url"])}"><span class="resource-icon">{icon("book")}</span><div><strong>{esc(item["title"])}</strong><small>{esc(item["url"])}</small></div><span class="arrow" aria-hidden="true">↗</span></a>'
+                for item in self.course_links) + '</div>'
+        else:
+            body += '<p class="empty">No course links have been shared yet. Check back after class.</p>'
+        self.write(current, 'Course links', body, 'links')
 
     def viewer(self, item):
         current = unquote(item['url'])

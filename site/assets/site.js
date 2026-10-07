@@ -7,6 +7,9 @@ menu?.addEventListener('click', () => {
 });
 document.addEventListener('keydown', event => { if (event.key === 'Escape' && sidebar.classList.contains('open')) { closeMenu(); menu?.focus(); } });
 document.addEventListener('click', event => { if (!sidebar.contains(event.target) && !menu?.contains(event.target)) closeMenu(); });
+sidebar.addEventListener('click', event => {
+  if (event.target.closest('a')) closeMenu();
+});
 
 const copyButton = document.querySelector('[data-copy]');
 copyButton?.addEventListener('click', async () => {
@@ -32,20 +35,41 @@ if (search) {
   const results = document.querySelector('#search-results');
   const regular = document.querySelector('#browse-content');
   const count = document.querySelector('#search-count');
+  const kind = document.querySelector('#material-kind');
+  const clear = document.querySelector('#clear-search');
   const prefix = document.body.dataset.root;
-  function updateSearch() {
+  document.querySelector('.search-controls').hidden = false;
+  function restoreSearch() {
+    const params = new URLSearchParams(window.location.search);
+    search.value = params.get('q') || '';
+    const savedKind = params.get('type') || '';
+    kind.value = Array.from(kind.options).some(option => option.value === savedKind) ? savedKind : '';
+    updateSearch();
+  }
+  function updateSearch(save = false) {
     const query = search.value.trim().toLocaleLowerCase();
-    regular.hidden = Boolean(query);
-    results.hidden = !query;
+    const filtering = Boolean(query || kind.value);
+    regular.hidden = filtering;
+    results.hidden = !filtering;
+    clear.hidden = !filtering;
     results.replaceChildren();
     count.textContent = '';
-    if (!query) return;
-    const words = query.split(/\s+/);
-    const matches = entries.filter(item => words.every(word => item.search.includes(word)));
+    if (save) {
+      const url = new URL(window.location.href);
+      for (const [key, value] of [['q', search.value.trim()], ['type', kind.value]]) {
+        if (value) url.searchParams.set(key, value);
+        else url.searchParams.delete(key);
+      }
+      // Keep a shareable URL and restore it when returning from an example.
+      window.history.replaceState(null, '', url);
+    }
+    if (!filtering) return;
+    const words = query.split(/\s+/).filter(Boolean);
+    const matches = entries.filter(item => (!kind.value || item.kind === kind.value) && words.every(word => item.search.includes(word)));
     count.textContent = `${matches.length} ${matches.length === 1 ? 'material' : 'materials'} found`;
     if (!matches.length) {
       const empty = document.createElement('p'); empty.className = 'empty';
-      empty.textContent = 'No matches yet. Try a week number, a filename, or a topic such as loops or strings.';
+      empty.textContent = 'No matches yet. Try a week number, a filename, a topic such as loops or strings, or choose All file types.';
       results.append(empty); return;
     }
     const list = document.createElement('div'); list.className = 'list';
@@ -59,6 +83,14 @@ if (search) {
     }
     results.append(list);
   }
-  search.addEventListener('input', updateSearch);
-  updateSearch();
+  search.addEventListener('input', () => updateSearch(true));
+  kind.addEventListener('change', () => updateSearch(true));
+  clear.addEventListener('click', () => {
+    search.value = ''; kind.value = '';
+    updateSearch(true);
+    search.focus();
+  });
+  window.addEventListener('popstate', restoreSearch);
+  window.addEventListener('pageshow', restoreSearch);
+  restoreSearch();
 }
