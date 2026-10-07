@@ -1,4 +1,4 @@
 # Course links: one entry per line. Blank lines and # comments are ignored.
 # Use a plain https:// URL, Label | URL, or [Label](URL).
 # Example (remove the leading # to publish):
-# Python documentation | https://docs.python.org/3/
+Python documentation | https://docs.python.org/3/
