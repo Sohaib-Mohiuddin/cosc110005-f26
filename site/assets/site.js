@@ -29,14 +29,11 @@ copyButton?.addEventListener('click', async () => {
   }
 });
 
-// Keep the book icon until a logo loads, including cached images and failures.
-document.querySelectorAll('.link-logo img').forEach(image => {
-  const updateLogo = () => {
-    image.parentElement.classList.toggle('is-loaded', image.complete && image.naturalWidth > 0);
-  };
-  image.addEventListener('load', updateLogo);
-  image.addEventListener('error', updateLogo);
-  updateLogo();
+// One image per link: replace its source with the local fallback on failure.
+document.querySelectorAll('img[data-logo-src]').forEach(image => {
+  const fallback = image.getAttribute('src');
+  image.addEventListener('error', () => { image.src = fallback; }, {once: true});
+  image.src = image.dataset.logoSrc;
 });
 
 const search = document.querySelector('#material-search');

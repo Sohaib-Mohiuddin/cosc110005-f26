@@ -40,8 +40,8 @@ def link_logo(url):
     """Let the browser load a favicon using only the public link's hostname."""
     hostname = quote(urlsplit(url).hostname, safe='')
     source = f'https://www.google.com/s2/favicons?domain={hostname}&sz=64'
-    return (f'<span class="resource-icon link-logo" aria-hidden="true">{icon("book")}'
-            f'<img src="{esc(source)}" alt="" width="32" height="32" '
+    return ('<span class="resource-icon course-link-logo" aria-hidden="true">'
+            f'<img src="assets/link-fallback.svg" data-logo-src="{esc(source)}" alt="" width="32" height="32" '
             'loading="lazy" decoding="async" referrerpolicy="no-referrer"></span>')
 
 
@@ -328,7 +328,7 @@ print(message)
         body = self.breadcrumbs(current, 'Course links') + '<div class="page-heading"><p class="eyebrow">KEEP THESE HANDY</p><h1>Course links</h1><p>Useful websites and references shared in class, together in one place.</p></div>'
         if self.course_links:
             body += '<div class="list">' + ''.join(
-                f'<a class="file-row" href="{esc(item["url"])}">{link_logo(item["url"])}<div><strong>{esc(item["title"])}</strong><small>{esc(item["url"])}</small></div><span class="arrow" aria-hidden="true">↗</span></a>'
+                f'<a class="file-row" href="{esc(item["url"])}">{link_logo(item["url"])}<div><strong>{esc(item["title"])}</strong><small>{esc(item["url"])}</small></div></a>'
                 for item in self.course_links) + '</div>'
         else:
             body += '<p class="empty">No course links have been shared yet. Check back after class.</p>'

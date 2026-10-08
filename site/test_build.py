@@ -72,7 +72,12 @@ class CourseSiteTests(unittest.TestCase):
             self.assertNotIn('instructor.html', parser.links)
             self.assertEqual(len(parser.images), 1)
             image = parser.images[0]
-            source = urlsplit(image['src'])
+            self.assertEqual(image['src'], 'assets/link-fallback.svg')
+            row = page.split('<a class="file-row"', 1)[1].split('</a>', 1)[0]
+            self.assertEqual(row.count('<img '), 1)
+            self.assertNotIn('<svg', row)
+            self.assertNotIn('class="arrow"', row)
+            source = urlsplit(image['data-logo-src'])
             self.assertEqual(source.scheme, 'https')
             self.assertEqual(source.netloc, 'www.google.com')
             self.assertEqual(parse_qs(source.query), {'domain': ['example.org'], 'sz': ['64']})

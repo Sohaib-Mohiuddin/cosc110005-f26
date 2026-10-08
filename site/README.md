@@ -32,9 +32,9 @@ Python tutorial | https://docs.python.org/3/tutorial/
 
 Blank lines and lines beginning with `#` are ignored. Labels are optional; a plain URL displays its host as the title. Links keep their file order, and duplicate URLs appear only once. Use complete `http://` or `https://` URLs without spaces or embedded credentials. Invalid entries fail the build with the filename and line number so a typo can be corrected before publishing. An empty or missing file displays a friendly empty state. Links work without JavaScript and open in the same tab.
 
-Include a week and topic in each label to help students find relevant readings. The current collection covers weeks 2–5, with Python documentation, Python for Everybody readings, Python Tutor, and University of Waterloo practice exercises.
+Include a week and topic in each label to help students find relevant readings. The current collection covers weeks 2–5, with Python documentation, Python for Everybody readings, Python Tutor, University of Waterloo practice exercises, and GeeksforGeeks readings for individual concepts, including pseudocode and flowcharts.
 
-Each link automatically displays its website favicon as a small logo. The browser requests icons from Google's favicon service using only the destination hostname (no path, query, or fragment); it sends no referrer. Images load lazily, and the built-in book icon remains visible if a logo is unavailable, blocked, or JavaScript is disabled. No image URLs or API keys need to be maintained in `links.txt`, and site builds do not require network access. These are website logos, rather than article preview images.
+Each link displays a single image: its website favicon, or a local book icon if the logo is unavailable, blocked, or JavaScript is disabled. There is no additional arrow or overlapping fallback icon. The browser requests icons from Google's favicon service using only the destination hostname (no path, query, or fragment); it sends no referrer. Images load lazily. No image URLs or API keys need to be maintained in `links.txt`, and site builds do not require network access. These are website logos, rather than article preview images.
 
 The instructor guide remains at `instructor.html`, accessible by entering its address directly. It is no longer linked from student navigation.
 

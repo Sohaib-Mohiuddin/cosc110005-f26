@@ -8,22 +8,49 @@ Python documentation | https://docs.python.org/3/
 # Week 2: Algorithms, problem solving, and tracing
 Week 2 — Problem solving and the building blocks of programs (Python for Everybody) | https://www.py4e.com/html3/01-intro
 Week 2 — Trace Python code one step at a time (Python Tutor) | https://pythontutor.com/visualize.html#mode=edit
+Week 2 — Algorithms: inputs, outputs, and planning a solution (GeeksforGeeks) | https://www.geeksforgeeks.org/dsa/introduction-to-algorithms/
+Week 2 — Writing pseudocode (GeeksforGeeks) | https://www.geeksforgeeks.org/dsa/how-to-write-a-pseudo-code/
+Week 2 — Flowchart symbols and worked examples (GeeksforGeeks) | https://www.geeksforgeeks.org/computer-science-fundamentals/what-is-a-flowchart-and-its-types/
+Week 2 — Linear search: tracing comparisons one at a time (GeeksforGeeks) | https://www.geeksforgeeks.org/dsa/linear-search/
 
 # Week 3: Variables, types, input, arithmetic, and strings
 Week 3 — Variables, expressions, type conversion, and input (Python for Everybody) | https://www.py4e.com/html3/02-variables
 Week 3 — Numbers and arithmetic operators (Python tutorial) | https://docs.python.org/3/tutorial/introduction.html#numbers
 Week 3 — Working with strings (Python tutorial) | https://docs.python.org/3/tutorial/introduction.html#text
 Week 3 — F-strings and decimal-place formatting (Python tutorial) | https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals
+Week 3 — Variables and assignment (GeeksforGeeks) | https://www.geeksforgeeks.org/python/python-variables/
+Week 3 — Data types: integers, floats, strings, and Booleans (GeeksforGeeks) | https://www.geeksforgeeks.org/python/python-data-types/
+Week 3 — Type conversion and casting (GeeksforGeeks) | https://www.geeksforgeeks.org/python/type-casting-in-python/
+Week 3 — Keyboard input and printed output (GeeksforGeeks) | https://www.geeksforgeeks.org/python/input-and-output-in-python/
+Week 3 — Arithmetic operators: division, remainder, and powers (GeeksforGeeks) | https://www.geeksforgeeks.org/python/python-arithmetic-operators/
+Week 3 — Operator precedence and parentheses (GeeksforGeeks) | https://www.geeksforgeeks.org/python/precedence-and-associativity-of-operators-in-python/
+Week 3 — Strings: indexing, concatenation, and repetition (GeeksforGeeks) | https://www.geeksforgeeks.org/python/python-string/
+Week 3 — Cleaning strings and changing case with string methods (GeeksforGeeks) | https://www.geeksforgeeks.org/python/python-string-methods/
+Week 3 — F-strings and formatted output (GeeksforGeeks) | https://www.geeksforgeeks.org/python/formatted-string-literals-f-strings-python/
+Week 3 — Floating-point precision and decimal representation (GeeksforGeeks) | https://www.geeksforgeeks.org/python/floating-point-error-in-python/
 
 # Week 4: Selection, Boolean logic, and input validation
 Week 4 — Conditions, nested decisions, and guarding operations (Python for Everybody) | https://www.py4e.com/html3/03-conditional
 Week 4 — Boolean operators and short-circuit evaluation (Python reference) | https://docs.python.org/3/library/stdtypes.html#boolean-operations-and-or-not
 Week 4 — Catching invalid numeric input with try/except (Python tutorial, first example) | https://docs.python.org/3/tutorial/errors.html#handling-exceptions
+Week 4 — Selection: if, elif, else, and nested decisions (GeeksforGeeks) | https://www.geeksforgeeks.org/python/conditional-statements-in-python/
+Week 4 — Comparison operators and boundary checks (GeeksforGeeks) | https://www.geeksforgeeks.org/python/relational-operators-in-python/
+Week 4 — Boolean logic: and, or, and not (GeeksforGeeks) | https://www.geeksforgeeks.org/python/python-logical-operators/
+Week 4 — Combining conditions and validating a numeric range (GeeksforGeeks) | https://www.geeksforgeeks.org/python/check-multiple-conditions-in-if-statement-python/
+Week 4 — Short-circuit evaluation (GeeksforGeeks) | https://www.geeksforgeeks.org/python/short-circuiting-techniques-python/
+Week 4 — Handling conversion errors with try and except (GeeksforGeeks) | https://www.geeksforgeeks.org/python/python-try-except/
 
 # Week 5: Loops, accumulators, sentinels, and menus
 Week 5 — While loops, sentinel input, counters, and totals (Python for Everybody) | https://www.py4e.com/html3/05-iterations
 Week 5 — Count-controlled loops with for and range (Python tutorial) | https://docs.python.org/3/tutorial/controlflow.html#the-range-function
 Week 5 — Using break and continue in loops (Python tutorial) | https://docs.python.org/3/tutorial/controlflow.html#break-and-continue-statements
+Week 5 — For loops and iteration (GeeksforGeeks) | https://www.geeksforgeeks.org/python/python-for-loops/
+Week 5 — Range: start, stop, and step (GeeksforGeeks) | https://www.geeksforgeeks.org/python/python-range-function/
+Week 5 — While loops, counters, and termination (GeeksforGeeks) | https://www.geeksforgeeks.org/python/python-while-loop/
+Week 5 — Accumulators: a running total with a while loop (GeeksforGeeks) | https://www.geeksforgeeks.org/python/python-program-to-find-the-sum-of-natural-numbers-using-while-loop/
+Week 5 — Break and continue: controlling loop execution (GeeksforGeeks) | https://www.geeksforgeeks.org/python/break-continue-and-pass-in-python/
+Week 5 — Sentinel versus counter-controlled loops: concept comparison with C examples (GeeksforGeeks) | https://www.geeksforgeeks.org/c/difference-between-sentinel-and-counter-controlled-loop-in-c/
+Week 5 — Menu choices and input: command-line calculator section (GeeksforGeeks) | https://www.geeksforgeeks.org/python/make-simple-calculator-using-python/
 
 # Practice across weeks 2–5
 Weeks 2–5 — Interactive Python exercises: variables, input, decisions, and loops (University of Waterloo) | https://cscircles.cemc.uwaterloo.ca/
