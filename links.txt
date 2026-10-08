@@ -1,4 +1,29 @@
 # Course links: one entry per line. Blank lines and # comments are ignored.
 # Use a plain https:// URL, Label | URL, or [Label](URL).
-# Example (remove the leading # to publish):
+# Website logos are displayed automatically from each link's hostname.
+
+# General reference
 Python documentation | https://docs.python.org/3/
+
+# Week 2: Algorithms, problem solving, and tracing
+Week 2 — Problem solving and the building blocks of programs (Python for Everybody) | https://www.py4e.com/html3/01-intro
+Week 2 — Trace Python code one step at a time (Python Tutor) | https://pythontutor.com/visualize.html#mode=edit
+
+# Week 3: Variables, types, input, arithmetic, and strings
+Week 3 — Variables, expressions, type conversion, and input (Python for Everybody) | https://www.py4e.com/html3/02-variables
+Week 3 — Numbers and arithmetic operators (Python tutorial) | https://docs.python.org/3/tutorial/introduction.html#numbers
+Week 3 — Working with strings (Python tutorial) | https://docs.python.org/3/tutorial/introduction.html#text
+Week 3 — F-strings and decimal-place formatting (Python tutorial) | https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals
+
+# Week 4: Selection, Boolean logic, and input validation
+Week 4 — Conditions, nested decisions, and guarding operations (Python for Everybody) | https://www.py4e.com/html3/03-conditional
+Week 4 — Boolean operators and short-circuit evaluation (Python reference) | https://docs.python.org/3/library/stdtypes.html#boolean-operations-and-or-not
+Week 4 — Catching invalid numeric input with try/except (Python tutorial, first example) | https://docs.python.org/3/tutorial/errors.html#handling-exceptions
+
+# Week 5: Loops, accumulators, sentinels, and menus
+Week 5 — While loops, sentinel input, counters, and totals (Python for Everybody) | https://www.py4e.com/html3/05-iterations
+Week 5 — Count-controlled loops with for and range (Python tutorial) | https://docs.python.org/3/tutorial/controlflow.html#the-range-function
+Week 5 — Using break and continue in loops (Python tutorial) | https://docs.python.org/3/tutorial/controlflow.html#break-and-continue-statements
+
+# Practice across weeks 2–5
+Weeks 2–5 — Interactive Python exercises: variables, input, decisions, and loops (University of Waterloo) | https://cscircles.cemc.uwaterloo.ca/

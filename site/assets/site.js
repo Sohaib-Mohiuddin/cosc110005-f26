@@ -29,6 +29,16 @@ copyButton?.addEventListener('click', async () => {
   }
 });
 
+// Keep the book icon until a logo loads, including cached images and failures.
+document.querySelectorAll('.link-logo img').forEach(image => {
+  const updateLogo = () => {
+    image.parentElement.classList.toggle('is-loaded', image.complete && image.naturalWidth > 0);
+  };
+  image.addEventListener('load', updateLogo);
+  image.addEventListener('error', updateLogo);
+  updateLogo();
+});
+
 const search = document.querySelector('#material-search');
 if (search) {
   const entries = JSON.parse(document.querySelector('#search-data').textContent);

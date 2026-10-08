@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import unquote, urlsplit
+from urllib.parse import parse_qs, unquote, urlsplit
 
 from build import ROOT, Site, discover, highlight_python, read_links
 
@@ -15,9 +15,12 @@ class Links(HTMLParser):
         self.links = []
         self.ids = set()
         self.text = []
+        self.images = []
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
+        if tag == 'img':
+            self.images.append(attrs)
         if 'id' in attrs:
             self.ids.add(attrs['id'])
         for attribute in ('href', 'src'):
@@ -67,6 +70,15 @@ class CourseSiteTests(unittest.TestCase):
             parser = Links(); parser.feed(page)
             self.assertIn('https://example.org/?a=1&b=2', parser.links)
             self.assertNotIn('instructor.html', parser.links)
+            self.assertEqual(len(parser.images), 1)
+            image = parser.images[0]
+            source = urlsplit(image['src'])
+            self.assertEqual(source.scheme, 'https')
+            self.assertEqual(source.netloc, 'www.google.com')
+            self.assertEqual(parse_qs(source.query), {'domain': ['example.org'], 'sz': ['64']})
+            self.assertEqual(image['alt'], '')
+            self.assertEqual(image['loading'], 'lazy')
+            self.assertEqual(image['referrerpolicy'], 'no-referrer')
             site.course_links = []
             site.links()
             self.assertIn('No course links have been shared yet', (site.out / 'links.html').read_text())
