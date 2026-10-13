@@ -2,7 +2,7 @@
 
 Retry loops, nested loops, break/continue, tracing, and cumulative midterm practice.
 
-Five core Python demos plus an optional extension for the professor to present in numerical order. Each file includes a problem, inputs and outputs, pseudocode, a desk check, and a try-it/discussion prompt.
+Five core Python demos, an optional extension, and two additional nested-loop demos for the professor to present in numerical order. Each file includes a problem, inputs and outputs, pseudocode, a desk check, and a try-it/discussion prompt.
 
 ## Run
 
@@ -24,6 +24,8 @@ Replace the filename to run another demo. On Windows, `py` can be used in place 
 | [04_find_an_off_by_one_error.py](04_find_an_off_by_one_error.py) | Use a trace to diagnose loop bounds |
 | [05_midterm_practice.py](05_midterm_practice.py) | Combine data, decisions, and iteration |
 | [06_track_running_extremes.py](06_track_running_extremes.py) | Optional extension: Find minimum and maximum values as input arrives |
+| [07_build_a_star_triangle.py](07_build_a_star_triangle.py) | Let the outer-loop value control the inner loop's length |
+| [08_multiplication_tables_with_while.py](08_multiplication_tables_with_while.py) | Reset an inner while-loop counter and per-table total |
 
 ## Classroom flow
 

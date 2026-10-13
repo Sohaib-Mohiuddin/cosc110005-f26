@@ -17,6 +17,7 @@ for score in readings:
     if score == -1:
         break
     if score < 0 or score > 100:
+        print("Skipping invalid score: ", str(score))
         print(f"Skipping invalid score: {score}")
         continue
     accepted_count = accepted_count + 1
