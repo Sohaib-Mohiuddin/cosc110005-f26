@@ -58,6 +58,11 @@ def title_for(path):
     return re.sub(r'^\d+[_-]?', '', path.stem).replace('_', ' ').replace('-', ' ').capitalize()
 
 
+def assignment_number(path):
+    match = re.match(r'^Assignment-(\d+)/', str(path), re.I)
+    return int(match[1]) if match else None
+
+
 def read_links(path):
     """Read public course links without fetching them; report malformed lines early."""
     if not path.exists():
@@ -100,7 +105,7 @@ def discover(root, include_untracked=False):
         tracked = set(result.stdout.decode('utf-8').split('\0'))
     candidates = list(root.glob('*.py'))
     for folder in root.iterdir():
-        if folder.is_dir() and (re.fullmatch(r'week-\d+-demos', folder.name) or re.fullmatch(r'in-class-exercise-\d+', folder.name) or folder.name in {'utilities', 'materials', 'Midterm Preparation'}):
+        if folder.is_dir() and (re.fullmatch(r'week-\d+-demos', folder.name) or re.fullmatch(r'in-class-exercise-\d+', folder.name) or re.fullmatch(r'Assignment-\d+', folder.name, re.I) or folder.name in {'utilities', 'materials', 'Midterm Preparation'}):
             candidates.extend(folder.rglob('*'))
     for path in sorted(candidates, key=lambda p: natural(p.relative_to(root).as_posix())):
         relative = path.relative_to(root)
@@ -117,7 +122,7 @@ def discover(root, include_untracked=False):
             continue
         text = path.read_text(encoding='utf-8-sig', errors='replace') if path.suffix.lower() in {'.py', '.md', '.txt', '.csv', '.json'} else ''
         week = re.match(r'week-(\d+)-demos/', relative.as_posix())
-        files.append({'path': relative.as_posix(), 'title': title_for(path), 'kind': path.suffix[1:].upper(), 'week': int(week[1]) if week else None, 'text': text, 'url': 'view/' + quote(relative.as_posix(), safe='/') + '.html'})
+        files.append({'path': relative.as_posix(), 'title': title_for(path), 'kind': path.suffix[1:].upper(), 'week': int(week[1]) if week else None, 'assignment': assignment_number(relative.as_posix()), 'text': text, 'url': 'view/' + quote(relative.as_posix(), safe='/') + '.html'})
     return files
 
 
@@ -158,6 +163,11 @@ class Site:
         self.files = discover(root, include_untracked)
         self.by_path = {item['path']: item for item in self.files}
         self.weeks = sorted({item['week'] for item in self.files if item['week'] is not None})
+        self.assignment_numbers = sorted({item['assignment'] for item in self.files if item['assignment'] is not None})
+        for number in self.assignment_numbers:
+            info = self.assignment_info(number)
+            if info['brief'] and info['brief']['kind'] == 'PDF':
+                info['brief']['title'] = f'Assignment {number} brief · {info["title"]}'
         self.learning = Learning(self)
 
     def week_info(self, week):
@@ -168,6 +178,24 @@ class Site:
 
     def github(self, path='', mode='blob'):
         return self.config['repository'].rstrip('/') + '/' + mode + '/' + quote(self.config['branch'], safe='') + ('/' + quote(path, safe='/') if path else '')
+
+    def assignment_info(self, number):
+        items = [item for item in self.files if item['assignment'] == number]
+        info = self.config.get('assignments', {}).get(str(number), {})
+        folder = items[0]['path'].split('/')[0]
+        guide = self.by_path.get(folder + '/README.md')
+        heading = re.search(r'^#\s+(?:Assignment\s*[- ]?\s*\d+\s*[:–—-]?\s*)?(.+)', guide['text'], re.M | re.I) if guide else None
+        pdfs = sorted((item for item in items if item['kind'] == 'PDF'), key=lambda item: (item['path'].count('/'), natural(item['path'])))
+        brief = pdfs[0] if pdfs else guide
+        return {'title': info.get('title', heading[1] if heading else f'Assignment {number}'),
+                'description': info.get('description', 'Read the instructions, plan your approach, and work through the assignment materials.'),
+                'submission': info.get('submission', ''), 'preparation': info.get('preparation', ''),
+                'related_weeks': [week for week in info.get('related_weeks', []) if week in self.weeks],
+                'folder': folder, 'items': items, 'brief': brief, 'guide': guide}
+
+    def assignment_label(self, number):
+        title = self.assignment_info(number)['title']
+        return f'Assignment {number}' if title.lower() == f'assignment {number}' else f'Assignment {number}: {title}'
 
     def link(self, target, current):
         return quote(posixpath.relpath(unquote(target), posixpath.dirname(current) or '.'), safe='/')
@@ -189,6 +217,9 @@ class Site:
             week = re.fullmatch(r'week-(\d+)-demos/?', path)
             if week and int(week[1]) in self.weeks:
                 return self.link(f'weeks/week-{week[1]}.html', current)
+            assignment = assignment_number(path.rstrip('/') + '/')
+            if assignment in self.assignment_numbers and '/' not in path.rstrip('/'):
+                return self.link(f'assignments/assignment-{assignment}.html', current)
             return self.github(path)
 
         def inline(line):
@@ -254,7 +285,7 @@ class Site:
         def nav(target, label, symbol, key):
             selected = active == key
             return f'<a class="nav-link{" active" if selected else ""}" href="{self.link(target, current)}"{chr(32) + "aria-current=\"page\"" if selected else ""}>{symbol}{label}</a>'
-        menu = nav('index.html', 'Course overview', icon('grid'), 'overview') + nav('getting-started.html', 'Getting started', icon('code'), 'start') + nav('resources.html', 'Exercises & resources', icon('file'), 'resources') + nav('links.html', 'Course links', icon('book'), 'links')
+        menu = nav('index.html', 'Course overview', icon('grid'), 'overview') + nav('getting-started.html', 'Getting started', icon('code'), 'start') + nav('assignments.html', 'Assignments', icon('file'), 'assignments') + nav('resources.html', 'Exercises & resources', icon('book'), 'resources') + nav('links.html', 'Course links', icon('book'), 'links')
         if 'Midterm Preparation/README.md' in self.by_path:
             menu += nav(self.by_path['Midterm Preparation/README.md']['url'], 'Midterm preparation', icon('book'), 'midterm')
         menu += f'<a class="nav-link" href="{prefix}index.html#weekly-materials">{icon("search")}Search materials</a>'
@@ -268,8 +299,12 @@ class Site:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(page, encoding='utf-8')
 
-    def breadcrumbs(self, current, label, week=None):
+    def breadcrumbs(self, current, label, week=None, assignment=None):
         middle = f'<span>/</span><a href="{self.link(f"weeks/week-{week}.html", current)}">Week {week}</a>' if week else ''
+        if assignment is not None:
+            middle = f'<span>/</span><a href="{self.link("assignments.html", current)}">Assignments</a>'
+            if current != f'assignments/assignment-{assignment}.html':
+                middle += f'<span>/</span><a href="{self.link(f"assignments/assignment-{assignment}.html", current)}">Assignment {assignment}</a>'
         return f'<div class="breadcrumbs"><a href="{self.link("index.html", current)}">Course overview</a>{middle}<span>/</span><span>{esc(label)}</span></div>'
 
     def build(self):
@@ -282,6 +317,7 @@ class Site:
             shutil.copyfile(self.root / item['path'], dest)
         self.learning.build_bundles()
         self.home()
+        self.assignments()
         self.resources()
         self.links()
         self.guides()
@@ -303,8 +339,12 @@ class Site:
         entries = []
         for item in self.files:
             info = self.week_info(item['week']) if item['week'] else {'title': '', 'tags': []}
-            search = ' '.join([item['title'], item['path'], item['text'], info['title'], *info['tags'], f'week {item["week"]}' if item['week'] else 'resources']).lower()
-            entries.append({key: item[key] for key in ['title', 'path', 'kind', 'url', 'week']} | {'search': search, 'excerpt': item['text'][:100000]})
+            section = f'week {item["week"]}' if item['week'] else 'resources'
+            if item['assignment'] is not None:
+                assignment_info = self.assignment_info(item['assignment'])
+                section = f'assignments assignment {item["assignment"]} {assignment_info["title"]} {assignment_info["description"]}'
+            search = ' '.join([item['title'], item['path'], item['text'], info['title'], *info['tags'], section]).lower()
+            entries.append({key: item[key] for key in ['title', 'path', 'kind', 'url', 'week', 'assignment']} | {'search': search, 'excerpt': item['text'][:100000]})
         kinds = ''.join(f'<option value="{esc(kind)}">{esc(kind)}</option>' for kind in sorted({item['kind'] for item in self.files}))
         week_options = ''.join(f'<option value="{week}">Week {week}</option>' for week in self.weeks)
         current_week = self.config.get('current_week')
@@ -314,14 +354,63 @@ class Site:
         if current_week is not None:
             info = self.week_info(current_week)
             current_card = f'<a class="resource-card current-week" href="weeks/week-{current_week}.html"><span class="resource-icon">{icon("book")}</span><span><strong>This week · Week {current_week}: {esc(info["title"])}</strong><small>{esc(info["description"])}</small></span><span class="arrow">→</span></a>'
+        if self.assignment_numbers:
+            total = len(self.assignment_numbers)
+            assignment_card = f'<a class="resource-card assignment-shortcut" href="assignments.html"><span class="resource-icon">{icon("file")}</span><span><strong>Assignments</strong><small>{total} {"assignment" if total == 1 else "assignments"} available · Read the brief and get the files.</small></span><span class="arrow" aria-hidden="true">→</span></a>'
+            current_card = '<div class="classroom-shortcuts">' + current_card + assignment_card + '</div>'
         data = json_script(entries)
         self.write('index.html', 'Your Python classroom', f'''<section class="hero"><div><p class="eyebrow">A LITTLE CURIOSITY. A LOT OF POSSIBILITY.</p><h1>Your next line<br>starts here<span style="color:#7d9a56">.</span></h1><p>Your home for Python examples, classroom exercises, and those “oh, now I get it” moments. Pick a week and explore.</p><div class="hero-actions"><a class="button primary" href="#weekly-materials">Explore the materials {icon('arrow')}</a><a class="button-link" href="getting-started.html">New to Python? Start here ↗</a></div></div><div class="hello-art" aria-label="Python example: print Hello, world!"><div class="art-grid"></div><div class="code-window"><div class="code-top"><i></i><i></i><i></i><span>your_first_program.py</span></div><pre><span class="dim"># Every programmer starts somewhere.</span>
 <span class="yellow">message</span> = <span class="yellow">"Hello, world!"</span>
 print(message)
 <span class="output">&gt; Hello, world!</span></pre></div><span class="art-note">One line at a time ✦</span></div></section>
 {current_card}<section id="resume-practice" class="resume-practice" hidden aria-label="Your practice"></section>
-<div class="stats"><span><strong>{len(self.weeks):02d}</strong> weeks to explore</span><span><strong>{python_count:02d}</strong> Python files</span><span><strong>{pdf_count:02d}</strong> exercise handouts</span><span class="grow">A place to learn by doing.</span></div>
-<section aria-labelledby="weekly-materials"><div class="section-heading"><div><h2 id="weekly-materials">Find your next lesson</h2><p>Follow along in class, or revisit at your own pace.</p></div><div class="search-controls" hidden><label class="search-box">{icon('search')}<span class="visually-hidden">Search all course materials</span><input id="material-search" type="search" placeholder="Search topics or code…" autocomplete="off" aria-controls="search-results"></label><label class="type-filter"><span class="visually-hidden">Filter by file type</span><select aria-label="Filter by file type" id="material-kind" aria-controls="search-results"><option value="">All file types</option>{kinds}</select></label><label class="type-filter"><span class="visually-hidden">Filter by week</span><select aria-label="Filter by week" id="material-week" aria-controls="search-results"><option value="">All weeks</option>{week_options}<option value="resources">Resources</option></select></label><button class="button small" id="clear-search" type="button" hidden>Clear search</button></div></div><p class="search-count" id="search-count" role="status" aria-live="polite"></p><div id="search-results" class="search-results" hidden></div><div id="browse-content"><div class="week-grid">{''.join(cards)}</div><div class="section-heading"><h2>A little extra practice</h2><a class="button-link" href="resources.html">All resources {icon('arrow')}</a></div><div class="resource-grid"><a class="resource-card" href="resources.html#exercises"><span class="resource-icon">{icon('file')}</span><span><strong>In-class exercises</strong><small>Put the concepts into practice.</small></span><span class="arrow">↗</span></a><a class="resource-card" href="resources.html#worksheets"><span class="resource-icon">{icon('book')}</span><span><strong>Worksheets & tools</strong><small>Trace your thinking. Test your code.</small></span><span class="arrow">↗</span></a></div><a class="resource-card course-links-card" href="links.html"><span class="resource-icon">{icon("book")}</span><span><strong>Course links</strong><small>Websites and references shared in class.</small></span><span class="arrow" aria-hidden="true">↗</span></a><div class="callout">{icon('branch')}<div><strong>The code is yours to explore.</strong><p>See how this course is organized on GitHub, then download a copy and try it yourself.</p></div><a class="button-link" href="{esc(self.config['repository'])}">Open GitHub ↗</a></div></div></section><script type="application/json" id="search-data">{data}</script><noscript><p class="empty">Search needs JavaScript. All weekly materials and downloads remain available through the links on this page.</p></noscript>''')
+<div class="stats"><span><strong>{len(self.weeks):02d}</strong> weeks to explore</span><span><strong>{python_count:02d}</strong> Python files</span><span><strong>{pdf_count:02d}</strong> PDF handouts</span><span class="grow">A place to learn by doing.</span></div>
+<section aria-labelledby="weekly-materials"><div class="section-heading"><div><h2 id="weekly-materials">Find your next lesson</h2><p>Follow along in class, or revisit at your own pace.</p></div><div class="search-controls" hidden><label class="search-box">{icon('search')}<span class="visually-hidden">Search all course materials</span><input id="material-search" type="search" placeholder="Search topics or code…" autocomplete="off" aria-controls="search-results"></label><label class="type-filter"><span class="visually-hidden">Filter by file type</span><select aria-label="Filter by file type" id="material-kind" aria-controls="search-results"><option value="">All file types</option>{kinds}</select></label><label class="type-filter"><span class="visually-hidden">Filter by week</span><select aria-label="Filter by week" id="material-week" aria-controls="search-results"><option value="">All weeks &amp; sections</option>{week_options}<option value="assignments">Assignments</option><option value="resources">Resources</option></select></label><button class="button small" id="clear-search" type="button" hidden>Clear search</button></div></div><p class="search-count" id="search-count" role="status" aria-live="polite"></p><div id="search-results" class="search-results" hidden></div><div id="browse-content"><div class="week-grid">{''.join(cards)}</div><div class="section-heading"><h2>A little extra practice</h2><a class="button-link" href="resources.html">All resources {icon('arrow')}</a></div><div class="resource-grid"><a class="resource-card" href="resources.html#exercises"><span class="resource-icon">{icon('file')}</span><span><strong>In-class exercises</strong><small>Put the concepts into practice.</small></span><span class="arrow">↗</span></a><a class="resource-card" href="resources.html#worksheets"><span class="resource-icon">{icon('book')}</span><span><strong>Worksheets & tools</strong><small>Trace your thinking. Test your code.</small></span><span class="arrow">↗</span></a></div><a class="resource-card course-links-card" href="links.html"><span class="resource-icon">{icon("book")}</span><span><strong>Course links</strong><small>Websites and references shared in class.</small></span><span class="arrow" aria-hidden="true">↗</span></a><div class="callout">{icon('branch')}<div><strong>The code is yours to explore.</strong><p>See how this course is organized on GitHub, then download a copy and try it yourself.</p></div><a class="button-link" href="{esc(self.config['repository'])}">Open GitHub ↗</a></div></div></section><script type="application/json" id="search-data">{data}</script><noscript><p class="empty">Search needs JavaScript. All weekly materials and downloads remain available through the links on this page.</p></noscript>''')
+
+    def assignments(self):
+        current = 'assignments.html'
+        body = self.breadcrumbs(current, 'Assignments') + '<div class="page-heading"><p class="eyebrow">PLAN IT. BUILD IT. CHECK IT.</p><h1>Assignments</h1><p>Your assignment briefs and supporting files, together in one place. Start with the instructions, then plan and test your work.</p></div>'
+        cards = []
+        for number in self.assignment_numbers:
+            info = self.assignment_info(number)
+            count = len(info['items'])
+            cards.append(f'<article class="assignment-card"><div class="card-top"><span class="week-number">{number:02d}</span><span class="badge">MATERIALS AVAILABLE</span></div><h2><a href="assignments/assignment-{number}.html">{esc(self.assignment_label(number))}</a></h2><p>{esc(info["description"])}</p><span class="assignment-file-count">{count} {"file" if count == 1 else "files"}{" · PDF brief" if info["brief"] and info["brief"]["kind"] == "PDF" else ""}</span><div class="assignment-actions"><a class="button primary" href="assignments/assignment-{number}.html" aria-label="View Assignment {number}">View assignment {icon("arrow")}</a><a class="button" href="{self.learning.bundle_url(info["items"][0])}" download aria-label="Download Assignment {number} files (ZIP)">Download files (ZIP)</a></div></article>')
+        body += '<div class="assignment-grid">' + ''.join(cards) + '</div>' if cards else '<p class="empty">No assignments have been released yet. Your assignment briefs and files will appear here when they are available.</p>'
+        if cards:
+            body += '<p class="reading-label assignment-release-note">More assignments will appear here as they are released. Check each brief for its requirements and submission instructions.</p>'
+        self.write(current, 'Assignments', body, 'assignments')
+        for number in self.assignment_numbers:
+            self.assignment(number)
+
+    def assignment(self, number):
+        current = f'assignments/assignment-{number}.html'
+        info = self.assignment_info(number)
+        body = self.breadcrumbs(current, f'Assignment {number}', assignment=number)
+        body += f'<div class="page-heading"><p class="eyebrow">ASSIGNMENT {number:02d}</p><h1>{esc(self.assignment_label(number))}</h1><p>{esc(info["description"])}</p></div>'
+        brief = info['brief']
+        if brief:
+            download = self.link('downloads/' + quote(brief['path'], safe='/'), current)
+            size = max(1, round((self.root / brief['path']).stat().st_size / 1024))
+            body += f'<section class="assignment-brief" aria-labelledby="brief-heading"><div><span class="eyebrow">START HERE</span><h2 id="brief-heading">Read the assignment brief</h2><p>Read the full requirements before you start your plan and code.</p><small>{esc(Path(brief["path"]).name)} · {esc(brief["kind"])} · {size:,} KB</small></div><div class="assignment-actions"><a class="button primary" href="{self.link(brief["url"], current)}">Read brief {icon("arrow")}</a><a class="button" href="{download}" download>Download brief ({esc(brief["kind"])})</a></div></section>'
+        if info['preparation'] or info['related_weeks']:
+            body += '<section class="assignment-preparation" aria-labelledby="preparation-heading"><h2 id="preparation-heading">Before you begin</h2>'
+            if info['preparation']:
+                body += f'<p>{esc(info["preparation"])}</p>'
+            if info['related_weeks']:
+                body += '<nav class="assignment-related" aria-label="Related lessons">' + ''.join(f'<a class="button small" href="{self.link(f"weeks/week-{week}.html", current)}">Week {week}: {esc(self.week_info(week)["title"])}</a>' for week in info['related_weeks']) + '</nav>'
+            body += '</section>'
+        submission = info['submission'] or 'Check the assignment brief for the due date, files to submit, and submission instructions.'
+        body += f'<aside class="assignment-submission" aria-label="Submission instructions"><strong>Submitting your work</strong><p>{esc(submission)}</p></aside>'
+        body += f'<section aria-labelledby="assignment-files"><div class="section-heading"><div><h2 id="assignment-files">Assignment files</h2><p>Get the brief and any supporting materials.</p></div><a class="button" href="{self.link(self.learning.bundle_url(info["items"][0]), current)}" download>Download assignment ZIP</a></div><div class="list">' + ''.join(self.row(item, current) for item in info['items']) + '</div></section>'
+        if info['guide']:
+            body += '<section class="prose" aria-label="Assignment notes">' + self.markdown(info['guide']['text'], info['guide']['path'], current) + '</section>'
+        index = self.assignment_numbers.index(number)
+        body += '<nav class="pager" aria-label="More assignments"><a href="../assignments.html">← All assignments</a>'
+        if index + 1 < len(self.assignment_numbers):
+            following = self.assignment_numbers[index + 1]
+            body += f'<a href="assignment-{following}.html">Assignment {following} →</a>'
+        body += '</nav>'
+        self.write(current, self.assignment_label(number), body, 'assignments')
 
     def week(self, week):
         current = f'weeks/week-{week}.html'
@@ -338,7 +427,9 @@ print(message)
     def resources(self):
         current = 'resources.html'
         body = self.breadcrumbs(current, 'Exercises & resources') + '<div class="page-heading"><p class="eyebrow">PRACTICE MAKES PROGRESS</p><h1>Try it. Trace it. Understand it.</h1><p>Classroom exercises, reusable worksheets, and the tools that help you explore the code.</p></div>'
-        groups = [('midterm', 'Midterm preparation · Weeks 2–5', lambda p: p.startswith('Midterm Preparation/')), ('exercises', 'In-class exercises', lambda p: p.startswith('in-class-exercise-')), ('worksheets', 'Worksheets & classroom tools', lambda p: p.startswith('utilities/')), ('more', 'More to explore', lambda p: not p.startswith(('Midterm Preparation/', 'in-class-exercise-', 'utilities/')))]
+        if self.assignment_numbers:
+            body += '<p class="assignment-resource-link">Looking for your assignment? <a href="assignments.html">Open Assignments →</a></p>'
+        groups = [('midterm', 'Midterm preparation · Weeks 2–5', lambda p: p.startswith('Midterm Preparation/')), ('exercises', 'In-class exercises', lambda p: p.startswith('in-class-exercise-')), ('worksheets', 'Worksheets & classroom tools', lambda p: p.startswith('utilities/')), ('more', 'More to explore', lambda p: assignment_number(p) is None and not p.startswith(('Midterm Preparation/', 'in-class-exercise-', 'utilities/')))]
         for anchor, label, predicate in groups:
             items = [item for item in self.files if item['week'] is None and predicate(item['path'])]
             body += f'<section id="{anchor}"><div class="section-heading"><h2>{label}</h2></div>'
@@ -360,13 +451,18 @@ print(message)
     def viewer(self, item):
         current = unquote(item['url'])
         week, source = item['week'], item['path']
+        assignment = item['assignment']
+        section = f'ASSIGNMENT {assignment}' if assignment is not None else 'WEEK ' + str(week) if week else 'COURSE RESOURCE'
         download = self.link('downloads/' + quote(source, safe='/'), current)
-        body = self.breadcrumbs(current, item['title'], week) + f'<div class="page-heading"><p class="eyebrow">{esc(item["kind"])} · {"WEEK " + str(week) if week else "COURSE RESOURCE"}</p><h1>{esc(item["title"])}</h1><p>{esc(source)}</p></div><div class="toolbar"><a class="button primary" href="{download}" download>Download {esc(item["kind"])}</a><a class="button" href="{esc(self.github(source))}">View on GitHub ↗</a>'
+        body = self.breadcrumbs(current, item['title'], week, assignment) + f'<div class="page-heading"><p class="eyebrow">{esc(item["kind"])} · {section}</p><h1>{esc(item["title"])}</h1><p>{esc(source)}</p></div><div class="toolbar"><a class="button primary" href="{download}" download>Download {esc(item["kind"])}</a><a class="button" href="{esc(self.github(source))}">View on GitHub ↗</a>'
         if item['kind'] == 'PDF':
             body += f'<a class="button" href="{download}">Open PDF ↗</a>'
         body += '</div>'
+        if assignment is not None:
+            body += f'<p class="assignment-context"><a href="{self.link(f"assignments/assignment-{assignment}.html", current)}">← Back to Assignment {assignment}</a> · Read the full brief for requirements and submission instructions.</p>'
         if item['kind'] == 'PY':
-            body += f'<p><a class="button" href="{self.link(self.learning.bundle_url(item), current)}" download>Download complete lesson ZIP</a></p>'
+            bundle_label = 'Download assignment ZIP' if assignment is not None else 'Download complete lesson ZIP'
+            body += f'<p><a class="button" href="{self.link(self.learning.bundle_url(item), current)}" download>{bundle_label}</a></p>'
             body += self.learning.controls(item)
             body += f'<p class="reading-label">Read the comments, predict the output, then try the example in your browser or on your computer.</p><div class="source"><div class="source-header"><span>{esc(Path(source).name)}</span><button data-copy type="button">Copy code</button></div><pre tabindex="0" aria-label="Python source code"><code id="source-code">{highlight_python(item["text"])}</code></pre></div><p id="copy-status" class="reading-label" role="status" aria-live="polite"></p>'
             body += f'<details class="run-help"><summary>How do I run this example?</summary><p>Download the repository ZIP from the getting started guide and extract it. Open a terminal in the extracted course folder, then use the command for your computer. Compatible examples can also run in the browser editor above. Desktop Python is needed for GUI and system tools.</p><h3>Windows</h3><code>py "{esc(source)}"</code><h3>macOS / Linux</h3><code>python3 "{esc(source)}"</code><p>Some programs ask you to type answers in the terminal. If a demo imports another course file, keep those files together.</p><a class="button-link" href="{self.link("getting-started.html", current)}">Full getting started guide {icon("arrow")}</a></details>'
@@ -379,10 +475,12 @@ print(message)
         else:
             body += '<div class="prose"><h2>Ready to explore?</h2><p>Download this material to open it with the appropriate app, or view it on GitHub.</p></div>'
         siblings = [entry for entry in self.files if entry['week'] == week and entry['kind'] == 'PY'] if item['kind'] == 'PY' else []
-        if source.startswith('Midterm Preparation/'):
+        if assignment is not None:
+            siblings = [entry for entry in siblings if entry['assignment'] == assignment]
+        elif source.startswith('Midterm Preparation/'):
             siblings = [entry for entry in siblings if entry['path'].startswith('Midterm Preparation/')]
         else:
-            siblings = [entry for entry in siblings if not entry['path'].startswith('Midterm Preparation/')]
+            siblings = [entry for entry in siblings if entry['assignment'] is None and not entry['path'].startswith('Midterm Preparation/')]
         if item in siblings:
             index = siblings.index(item)
             body += '<nav class="pager" aria-label="More examples">'
@@ -391,14 +489,14 @@ print(message)
             if index + 1 < len(siblings):
                 body += f'<a href="{self.link(siblings[index+1]["url"], current)}">{esc(siblings[index+1]["title"])} →</a>'
             body += '</nav>'
-        self.write(current, item['title'], body, 'midterm' if source.startswith('Midterm Preparation/') else f'week-{week}' if week else 'resources')
+        self.write(current, item['title'], body, 'assignments' if assignment is not None else 'midterm' if source.startswith('Midterm Preparation/') else f'week-{week}' if week else 'resources')
 
     def guides(self):
         repo = esc(self.config['repository'])
         start = '''<div class="page-heading"><p class="eyebrow">EVERYONE STARTS SOMEWHERE</p><h1>Your first steps with Python.</h1><p>You can read every example on this site without installing anything. When you’re ready to try the code, follow these steps.</p></div><article class="prose"><h2>Try it in your browser</h2><p>Open a Python example and expand <strong>Try Python in your browser</strong>. Edit the code, enter any answers in <strong>Program input</strong> (one per line), and press <strong>Run</strong>. Use <strong>Stop</strong> for a loop that will not end, or <strong>Reset code</strong> to restore the example. Your edits and practice markers are saved only in this browser; download your code to keep a separate copy.</p><p>Sample checks are practice feedback, not grades. GUI examples require desktop Python. To work on your computer, download a complete lesson ZIP and extract it with its folders intact.</p></article><div class="steps"><section class="step"><span>01 / GET PYTHON</span><h2>Set up your computer</h2><p>Install Python 3 from the official Python website. On Windows, follow the installer’s instructions for the Python launcher. If you’re using a college computer, check whether Python is already installed.</p><p><a href="https://www.python.org/downloads/">Download Python ↗</a></p></section><section class="step"><span>02 / GET THE EXAMPLES</span><h2>Make your own copy</h2><p>Open the course repository on GitHub. Choose the green Code button, then Download ZIP. Extract the ZIP into a folder you can find again. You don’t need a GitHub account to download.</p><p><a href="REPO">Open the course repository ↗</a></p></section><section class="step"><span>03 / TRY ONE PROGRAM</span><h2>Meet the terminal</h2><p>A terminal is a place to type commands. Open it in your extracted course folder (on Windows, right-click inside the folder and choose Open in Terminal). Run one example using the command below.</p></section></div><article class="prose"><h2>Start with a hello</h2><p>On <strong>Windows</strong>, type:</p><pre><code>py first_file.py</code></pre><p>On <strong>macOS or Linux</strong>, type:</p><pre><code>python3 first_file.py</code></pre><p>You should see a greeting. To try another program, replace <code>first_file.py</code> with its folder and filename. Each Python page on this site has the exact commands under “How do I run this example?”.</p><h2>Make learning an experiment</h2><ol><li><strong>Read</strong> the problem and the comments (lines beginning with <code>#</code>).</li><li><strong>Predict</strong> what the program will print. Try a trace table to follow the values.</li><li><strong>Run</strong> the original program and compare its output with your prediction.</li><li><strong>Change</strong> one value. Predict again. Run again.</li></ol><h2>If something doesn’t work</h2><ul><li><strong>Python isn’t recognized:</strong> finish installing Python, close the terminal, and open it again.</li><li><strong>File not found:</strong> check that the terminal is in the extracted course folder and that the filename is spelled correctly.</li><li><strong>The program seems to pause:</strong> look for a question. It may be waiting for you to type a response and press Enter.</li><li><strong>You see an error:</strong> read the last line first. Check the file and line number, then ask your instructor if you’re stuck.</li></ul><h2>A quick tour of GitHub</h2><p>A <strong>repository</strong> is a project’s files and their history. A <strong>commit</strong> records a change. A <strong>branch</strong> lets someone work on a separate version. A <strong>pull request</strong> proposes changes for review and merging.</p><p>Use “View on GitHub” beside any example to see its original file and history. Save your experiments in your downloaded copy; they won’t change the course repository.</p></article>'''.replace('REPO', repo)
         self.write('getting-started.html', 'Getting started', self.breadcrumbs('getting-started.html', 'Getting started') + start, 'start')
         upload = self.github('', 'upload')
-        instructor = f'''<div class="page-heading"><p class="eyebrow">FOR THE INSTRUCTOR</p><h1>Add a file. Grow the classroom.</h1><p>The site is built from your course files. Keep teaching in Python and Markdown; the library takes care of the navigation and code previews.</p><a class="button primary" href="{esc(upload)}">Upload materials on GitHub ↗</a></div><article class="prose"><h2>Publish from GitHub</h2><ol><li>Sign into GitHub with write access to this repository.</li><li>Open the destination folder, choose <strong>Add file → Upload files</strong>, and drag in your materials. To write notes, use <strong>Add file → Create new file</strong>.</li><li>Commit to <code>{esc(self.config['branch'])}</code>, or open and merge a pull request if you prefer review.</li><li>Open the repository’s <strong>Actions</strong> tab. After <strong>Publish course site</strong> finishes successfully, refresh this site.</li></ol><h2>Where should files go?</h2><div class="table-scroll"><table><tr><th>Material</th><th>Location</th></tr><tr><td>Weekly code and notes</td><td><code>week-6-demos/01_my_new_demo.py</code></td></tr><tr><td>A guide for that week</td><td><code>week-6-demos/README.md</code></td></tr><tr><td>Exercise handouts and starter code</td><td><code>in-class-exercise-4/</code></td></tr><tr><td>Worksheets and classroom tools</td><td><code>utilities/</code></td></tr><tr><td>Other course materials</td><td><code>materials/</code> (subfolders welcome)</td></tr></table></div><p>A new <code>week-N-demos</code> folder appears automatically once it contains a supported material. Number files like <code>01_topic.py</code> to set a teaching sequence. Add a README with a <code># Week 6: Your topic</code> heading for a useful default title. You can optionally set a title, description, and topic tags in <code>site/course.json</code>.</p><h2>What can I upload?</h2><p>Python, Markdown, PDF, plain text, CSV, JSON, notebooks, Word, PowerPoint, Excel, ZIP files, and common image formats. Python gets a highlighted code view; Markdown gets a readable guide; PDFs get a preview. Other formats have download and GitHub links.</p><p>Use relative Markdown links to other course files. Basic headings, paragraphs, links, inline code, fenced code blocks, lists, and tables are supported. Raw HTML is shown as text. Keep any companion modules alongside their demos.</p><h2>Publish from your computer</h2><p>Add or edit course files in your usual editor, commit them, and push to the main branch (or merge your pull request). GitHub rebuilds and publishes the site automatically. There is no second copy of the teaching content to maintain.</p><h2>Before publishing</h2><p>This is a public course site. Publish student-facing materials only. In a Git checkout, the builder includes supported tracked files inside course folders, including subfolders. Future weeks can remain untracked until you are ready to release them. Hidden files and build folders are excluded. Keep solutions, grades, and private notes outside those folders and outside the public repository.</p><p><a href="{repo}/actions">View publishing status ↗</a> · <a href="{esc(self.github('site/README.md'))}">Site maintenance guide ↗</a></p></article>'''
+        instructor = f'''<div class="page-heading"><p class="eyebrow">FOR THE INSTRUCTOR</p><h1>Add a file. Grow the classroom.</h1><p>The site is built from your course files. Keep teaching in Python and Markdown; the library takes care of the navigation and code previews.</p><a class="button primary" href="{esc(upload)}">Upload materials on GitHub ↗</a></div><article class="prose"><h2>Publish from GitHub</h2><ol><li>Sign into GitHub with write access to this repository.</li><li>Open the destination folder, choose <strong>Add file → Upload files</strong>, and drag in your materials. To write notes, use <strong>Add file → Create new file</strong>.</li><li>Commit to <code>{esc(self.config['branch'])}</code>, or open and merge a pull request if you prefer review.</li><li>Open the repository’s <strong>Actions</strong> tab. After <strong>Publish course site</strong> finishes successfully, refresh this site.</li></ol><h2>Where should files go?</h2><div class="table-scroll"><table><tr><th>Material</th><th>Location</th></tr><tr><td>Weekly code and notes</td><td><code>week-6-demos/01_my_new_demo.py</code></td></tr><tr><td>A guide for that week</td><td><code>week-6-demos/README.md</code></td></tr><tr><td>Assignment briefs and supporting files</td><td><code>Assignment-1/</code>, <code>Assignment-2/</code>, etc.</td></tr><tr><td>Exercise handouts and starter code</td><td><code>in-class-exercise-4/</code></td></tr><tr><td>Worksheets and classroom tools</td><td><code>utilities/</code></td></tr><tr><td>Other course materials</td><td><code>materials/</code> (subfolders welcome)</td></tr></table></div><p>A new <code>week-N-demos</code> folder appears automatically once it contains a supported material. Number files like <code>01_topic.py</code> to set a teaching sequence. Add a README with a <code># Week 6: Your topic</code> heading for a useful default title. You can optionally set a title, description, and topic tags in <code>site/course.json</code>.</p><h2>Release an assignment</h2><p>Add the brief and supporting files to <code>Assignment-1/</code>, <code>Assignment-2/</code>, and so on. Commit and push the folder when it is ready for students. The Assignments area, search, and downloads update automatically. Optional titles, descriptions, preparation guidance, related weeks, and submission notes belong in the <code>assignments</code> section of <code>site/course.json</code>. Only released assignments appear.</p><h2>What can I upload?</h2><p>Python, Markdown, PDF, plain text, CSV, JSON, notebooks, Word, PowerPoint, Excel, ZIP files, and common image formats. Python gets a highlighted code view; Markdown gets a readable guide; PDFs get a preview. Other formats have download and GitHub links.</p><p>Use relative Markdown links to other course files. Basic headings, paragraphs, links, inline code, fenced code blocks, lists, and tables are supported. Raw HTML is shown as text. Keep any companion modules alongside their demos.</p><h2>Publish from your computer</h2><p>Add or edit course files in your usual editor, commit them, and push to the main branch (or merge your pull request). GitHub rebuilds and publishes the site automatically. There is no second copy of the teaching content to maintain.</p><h2>Before publishing</h2><p>This is a public course site. Publish student-facing materials only. In a Git checkout, the builder includes supported tracked files inside course folders, including subfolders. Future weeks can remain untracked until you are ready to release them. Hidden files and build folders are excluded. Keep solutions, grades, and private notes outside those folders and outside the public repository.</p><p><a href="{repo}/actions">View publishing status ↗</a> · <a href="{esc(self.github('site/README.md'))}">Site maintenance guide ↗</a></p></article>'''
         self.write('instructor.html', 'For the instructor', self.breadcrumbs('instructor.html', 'For the instructor') + instructor, 'instructor')
 
 

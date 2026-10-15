@@ -13,6 +13,7 @@ You can also add files locally, commit, and push as usual. The build reads the l
 | Content | Location |
 | --- | --- |
 | Weekly demonstrations, companion files, notes | `week-N-demos/` |
+| Assignment briefs, starter files, and supporting data | `Assignment-N/` (for example, `Assignment-1/`) |
 | Exercise handouts and starter code | `in-class-exercise-N/` |
 | Midterm practice exercises and study guide | `Midterm Preparation/` |
 | Tools and worksheets | `utilities/` |
@@ -130,3 +131,13 @@ python site/build.py --include-untracked --output /tmp/private-course-preview
 ```
 
 Never deploy that private preview. The GitHub workflow uses the default tracked-only build.
+
+## Release assignments
+
+Place each assignment's public brief, starter code, and data in `Assignment-1/`, `Assignment-2/`, `Assignment-3/`, and so on. Commit and push the folder when it is ready. The site discovers numbered assignment folders (case-insensitively), sorts them numerically, and adds them to **Assignments**, the overview shortcut, search, and downloads. Empty or untracked folders are not listed. Untracked future weeks and assignments stay out of normal builds.
+
+Each assignment gets a landing page at `assignments/assignment-N.html`, a PDF/Markdown brief link, individual files, and a ZIP preserving its folder structure. The top-level PDF is preferred as the brief; otherwise the folder's `README.md` serves as the brief. Additional PDFs and nested files remain available in the file list. PDF preview pages keep the Assignments navigation active and link back to their assignment. Assignment starter-code navigation stays within that assignment. Assignment files are listed separately from practice resources.
+
+A `README.md` heading such as `# Assignment 2: Working with functions` supplies a title automatically. Optional entries under `assignments` in `site/course.json` can set `title`, `description`, `preparation`, `related_weeks` (a list of week numbers), and `submission`. Configuration alone does not publish an assignment. Only already released related weeks receive links. Do not invent dates or submission destinations; use the brief's instructions. Assignment 1's notes point students to DC Connect as its brief specifies.
+
+Search's week/section selector includes **Assignments**. Assignment titles and descriptions are searchable alongside filenames and supported text files. PDF body text is not indexed. ZIPs include `READ_ASSIGNMENT.txt` with guidance to consult the brief. Assignment downloads do not upload or submit a student's work; students follow their handout's submission process.

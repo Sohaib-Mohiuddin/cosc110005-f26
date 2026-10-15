@@ -80,7 +80,10 @@ if (search) {
     }
     if (!filtering) return;
     const words = query.split(/\s+/).filter(Boolean);
-    const matches = entries.filter(item => (!kind.value || item.kind === kind.value) && (!week.value || (item.week === null ? 'resources' : String(item.week)) === week.value) && words.every(word => item.search.includes(word)));
+    const matches = entries.filter(item => {
+      const section = item.assignment != null ? 'assignments' : item.week === null ? 'resources' : String(item.week);
+      return (!kind.value || item.kind === kind.value) && (!week.value || section === week.value) && words.every(word => item.search.includes(word));
+    });
     count.textContent = `${matches.length} ${matches.length === 1 ? 'material' : 'materials'} found`;
     if (!matches.length) {
       const empty = document.createElement('p'); empty.className = 'empty';

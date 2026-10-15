@@ -93,7 +93,10 @@ class Learning:
             with zipfile.ZipFile(folder / (key + '.zip'), 'w', zipfile.ZIP_DEFLATED) as archive:
                 for path in sorted(entries):
                     archive.write(self.site.root / path, path)
-                archive.writestr('RUN_LESSON.txt', 'Extract this whole ZIP. Keep the folders together.\nOpen a terminal in the extracted folder and run:\npython3 "folder/example.py"\nOn Windows use py instead of python3. Replace folder/example.py with the desired file.\nGUI examples require desktop Python with Tkinter.\n')
+                if items[0].get('assignment') is not None:
+                    archive.writestr('READ_ASSIGNMENT.txt', 'Extract this ZIP and keep the folders together.\nRead the assignment brief for the full requirements, due date, and submission instructions.\nThe included files are course materials. Complete and submit your own work as instructed in the brief.\n')
+                else:
+                    archive.writestr('RUN_LESSON.txt', 'Extract this whole ZIP. Keep the folders together.\nOpen a terminal in the extracted folder and run:\npython3 "folder/example.py"\nOn Windows use py instead of python3. Replace folder/example.py with the desired file.\nGUI examples require desktop Python with Tkinter.\n')
 
     def controls(self, item):
         esc = html.escape

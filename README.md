@@ -6,10 +6,13 @@ Professor-led Python demonstrations and classroom materials for Fall 2026.
 
 Browse by week, search topics and code, run and edit console examples in your browser, and download complete lessons. Practice checks, saved edits, and completion markers help you pick up where you left off. New to Python? Start with the site's [getting started guide](https://sohaib-mohiuddin.github.io/cosc110005-f26/getting-started.html).
 
+Open [Assignments](https://sohaib-mohiuddin.github.io/cosc110005-f26/assignments.html) for released assignment briefs and supporting files. Each assignment has its own page, PDF/download options, and a complete ZIP. Follow the brief for submission instructions and due dates.
+
 ## Available materials
 
 | Folder | Topics |
 | --- | --- |
+| [Assignment 1](Assignment-1/) | Square Numbers – Iteration; brief and submission guidance |
 | [Week 2](week-2-demos/) | Algorithms and problem solving |
 | [Week 3](week-3-demos/README.md) | Variables, data types, arithmetic, and strings |
 | [Week 4](week-4-demos/README.md) | Selection, Boolean expressions, and validation |
@@ -37,7 +40,7 @@ Numbered weekly demonstrations include pseudocode, desk checks, and classroom va
 
 ## Add new course content
 
-Upload or commit Python files, notes, or handouts to `week-N-demos/`, `in-class-exercise-N/`, `Midterm Preparation/`, `utilities/`, or `materials/`. Keep companion files with the demos that use them. Push to `main` or merge a pull request; GitHub Actions checks, rebuilds, and publishes the site automatically.
+Upload or commit Python files, notes, or handouts to `week-N-demos/`, `Assignment-N/`, `in-class-exercise-N/`, `Midterm Preparation/`, `utilities/`, or `materials/`. Keep companion files with the demos that use them. Push to `main` or merge a pull request; GitHub Actions checks, rebuilds, and publishes the site automatically. Future assignment folders appear when their files are committed and published.
 
 See the [instructor guide on the site](https://sohaib-mohiuddin.github.io/cosc110005-f26/instructor.html) or the [website maintenance guide](site/README.md) for publishing, supported formats, and local previews.
 
