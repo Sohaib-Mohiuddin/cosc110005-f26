@@ -4,7 +4,7 @@ Professor-led Python demonstrations and classroom materials for Fall 2026.
 
 **[Open the student course site →](https://sohaib-mohiuddin.github.io/cosc110005-f26/)**
 
-Browse by week, search topics and code, read highlighted Python examples, download source files, and open exercise handouts. New to Python? Start with the site's [getting started guide](https://sohaib-mohiuddin.github.io/cosc110005-f26/getting-started.html).
+Browse by week, search topics and code, run and edit console examples in your browser, and download complete lessons. Practice checks, saved edits, and completion markers help you pick up where you left off. New to Python? Start with the site's [getting started guide](https://sohaib-mohiuddin.github.io/cosc110005-f26/getting-started.html).
 
 ## Available materials
 
@@ -22,6 +22,8 @@ Browse by week, search topics and code, read highlighted Python examples, downlo
 The website discovers the available course folders automatically. Future weeks appear when their materials are added.
 
 ## Run a Python example
+
+On an example's page, expand **Try Python in your browser**, enter any answers in **Program input** (one per line), and select **Run**. Use **Stop** to end a run, **Reset code** to restore the original, and **Download my code** to keep your edits. Sample checks provide practice feedback, not grades. Edits and progress stay in that browser and do not sync between devices. GUI and system-tool examples require desktop Python.
 
 Download and extract this repository using **Code → Download ZIP**, or clone it. Open a terminal in the repository folder, then use Python 3:
 

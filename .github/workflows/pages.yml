@@ -17,6 +17,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Check out course materials
         uses: actions/checkout@v6
@@ -28,6 +29,21 @@ jobs:
         run: python -m unittest discover -s site -p 'test_*.py' -v
       - name: Build the course library
         run: python site/build.py
+      - name: Set up Node for browser checks
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: site/browser-tests/package-lock.json
+      - name: Install browser test tools
+        working-directory: site/browser-tests
+        run: npm ci
+      - name: Install Chromium
+        working-directory: site/browser-tests
+        run: npx playwright install --with-deps chromium
+      - name: Verify the student practice flow
+        working-directory: site/browser-tests
+        run: npm test
       - name: Upload website
         if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4
