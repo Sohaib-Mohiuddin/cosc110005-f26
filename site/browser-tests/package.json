@@ -2,7 +2,8 @@
   "name": "cosc-course-browser-checks",
   "private": true,
   "scripts": {
-    "test": "node smoke.cjs && node studio.cjs",
+    "test": "node navigation.cjs && node smoke.cjs && node studio.cjs",
+    "test:navigation": "node navigation.cjs",
     "test:studio": "node studio.cjs"
   },
   "devDependencies": {

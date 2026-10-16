@@ -1,20 +1,108 @@
-const menu = document.querySelector('.menu-toggle');
-const sidebar = document.querySelector('.sidebar');
-const mobileNavigation = window.matchMedia('(max-width: 800px)');
-function syncNavigation() { sidebar.inert = mobileNavigation.matches && !sidebar.classList.contains('open'); }
-function closeMenu() { sidebar.classList.remove('open'); menu?.setAttribute('aria-expanded', 'false'); syncNavigation(); }
-menu?.addEventListener('click', () => {
-  const open = sidebar.classList.toggle('open');
-  menu.setAttribute('aria-expanded', String(open));
-  syncNavigation();
-});
-mobileNavigation.addEventListener('change', syncNavigation);
-syncNavigation();
-document.addEventListener('keydown', event => { if (event.key === 'Escape' && sidebar.classList.contains('open')) { closeMenu(); menu?.focus(); } });
-document.addEventListener('click', event => { if (!sidebar.contains(event.target) && !menu?.contains(event.target)) closeMenu(); });
-sidebar.addEventListener('click', event => {
-  if (event.target.closest('a')) closeMenu();
-});
+(() => {
+  const C = window.Course;
+  const menu = document.querySelector('.menu-toggle');
+  const sidebar = document.querySelector('#course-navigation');
+  if (!menu || !sidebar) return;
+  const header = document.querySelector('.navigation-header');
+  const main = document.querySelector('#main');
+  const shell = document.querySelector('.shell');
+  const primary = document.querySelector('#primary-navigation');
+  const mobilePrimary = sidebar.querySelector('.mobile-primary-navigation');
+  const backdrop = document.querySelector('#navigation-backdrop');
+  const collapse = document.querySelector('#section-toggle');
+  const mobile = window.matchMedia('(max-width: 1000px)');
+  let collapsed = C.read('navigation', {}).collapsed === true;
+  let open = false;
+  document.body.classList.add('js-navigation');
+
+  function sync() {
+    const narrow = mobile.matches;
+    document.body.dataset.navigation = collapsed ? 'collapsed' : 'expanded';
+    document.body.classList.toggle('nav-open', narrow && open);
+    menu.setAttribute('aria-expanded', String(narrow && open));
+    primary.inert = narrow;
+    mobilePrimary.inert = !narrow;
+    sidebar.inert = narrow ? !open : collapsed || document.body.dataset.layout === 'embedded';
+    main.inert = narrow && open;
+    shell.inert = narrow && open;
+    header.inert = narrow && open;
+    backdrop.hidden = !(narrow && open);
+    collapse.setAttribute('aria-expanded', String(!collapsed));
+    collapse.setAttribute('aria-label', collapsed ? 'Show section navigation' : 'Hide section navigation');
+    collapse.title = collapsed ? 'Show section navigation' : 'Hide section navigation';
+    sidebar.querySelector('#close-navigation').hidden = !narrow;
+  }
+
+  function close(restoreFocus = true) {
+    const wasOpen = open;
+    open = false;
+    sync();
+    if (wasOpen && restoreFocus) menu.focus();
+  }
+
+  menu.addEventListener('click', () => {
+    open = !open;
+    sync();
+    if (open) sidebar.querySelector('#close-navigation').focus();
+  });
+  sidebar.querySelector('#close-navigation').addEventListener('click', () => close());
+  backdrop.addEventListener('click', () => close());
+  sidebar.addEventListener('click', event => { if (event.target.closest('a') && mobile.matches) close(); });
+  collapse.addEventListener('click', () => {
+    collapsed = !collapsed;
+    C.write('navigation', {collapsed});
+    sync();
+  });
+  mobile.addEventListener('change', () => {
+    const focusWasInside = sidebar.contains(document.activeElement);
+    const focusWasPrimary = primary.contains(document.activeElement);
+    const wasOpen = open;
+    open = false;
+    sync();
+    if (mobile.matches && (focusWasInside || focusWasPrimary)) menu.focus();
+    else if ((focusWasInside || wasOpen) && (sidebar.inert || !document.activeElement.getClientRects().length)) {
+      const target = document.body.dataset.layout === 'embedded' ? primary.querySelector('[aria-current]') : collapse;
+      target.focus();
+    }
+  });
+  document.addEventListener('keydown', event => {
+    if (!open || !mobile.matches) return;
+    if (event.key === 'Escape') { event.preventDefault(); close(); }
+    if (event.key === 'Tab') {
+      const controls = [...sidebar.querySelectorAll('a[href],button:not([disabled])')].filter(node => !node.hidden && node.getClientRects().length);
+      const first = controls[0], last = controls.at(-1);
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    }
+  });
+
+  function selectLocation() {
+    const locationURL = new URL(location.href);
+    const links = [...sidebar.querySelectorAll('.nav-link')];
+    let exact = null;
+    for (const link of links) {
+      const url = new URL(link.href);
+      if (url.pathname === locationURL.pathname && url.search === locationURL.search && url.hash === locationURL.hash) exact = link;
+    }
+    if (!exact) exact = links.find(link => {
+      const url = new URL(link.href);
+      return url.pathname === locationURL.pathname && url.search === locationURL.search && (!locationURL.hash || !url.hash);
+    });
+    if (!exact && !locationURL.hash && !locationURL.search) return;
+    for (const link of links) {
+      if (link === exact) {
+        link.classList.add('active');
+        link.setAttribute('aria-current', locationURL.hash || locationURL.search ? 'location' : 'page');
+      } else if (exact) { link.classList.remove('active'); link.removeAttribute('aria-current'); }
+    }
+  }
+  window.addEventListener('hashchange', selectLocation);
+  window.addEventListener('course:study-filter', selectLocation);
+  window.addEventListener('course:practice-topic', selectLocation);
+  window.addEventListener('popstate', selectLocation);
+  sync();
+  selectLocation();
+})();
 
 const copyButton = document.querySelector('[data-copy]');
 copyButton?.addEventListener('click', async () => {

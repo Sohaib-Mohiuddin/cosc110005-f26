@@ -41,7 +41,7 @@ The instructor guide remains at `instructor.html`, accessible by entering its ad
 
 ## Find course materials
 
-**Search materials** in the sidebar goes to the overview search. Students can combine keywords, file type, and week (or Resources), then use **Clear search** to return to browsing. Matching text excerpts explain search results. The URL stores `q`, `type`, and `week`, so searches can be bookmarked, shared, and restored on return. Search controls appear only when JavaScript is available.
+**Search** in the header goes to the overview search. Students can combine keywords, file type, and week (or Resources), then use **Clear search** to return to browsing. Matching text excerpts explain search results. The URL stores `q`, `type`, and `week`, so searches can be bookmarked, shared, and restored on return. Search controls appear only when JavaScript is available.
 
 ## Organize course files
 
@@ -81,7 +81,7 @@ Repository **Settings → Pages → Build and deployment → Source** must be **
 - `site/browser-tests/`: pinned Playwright tools and student-flow checks.
 - `.github/workflows/pages.yml`: validation and publishing.
 
-All materials and navigation work without JavaScript. Search, the mobile menu, and copying code use JavaScript; on small screens with JavaScript disabled, students can still navigate from the overview cards and page breadcrumbs. Fonts have system fallbacks if Google Fonts is unavailable. Compatible Python examples run on the student’s device through Pyodide in a Web Worker. GUI demonstrations still need desktop Python and Tkinter. Download complete lesson ZIPs to keep companion files together.
+All materials and reading navigation work without JavaScript. Search, the collapsible mobile menu, and copying code use JavaScript; on small screens with JavaScript disabled, primary and contextual links remain visible alongside overview cards and page breadcrumbs. Fonts have system fallbacks if Google Fonts is unavailable. Compatible Python examples run on the student’s device through Pyodide in a Web Worker. GUI demonstrations still need desktop Python and Tkinter. Download complete lesson ZIPs to keep companion files together.
 
 
 ## Browser practice
@@ -144,7 +144,15 @@ Search's week/section selector includes **Assignments**. Assignment titles and d
 
 ## Student studio
 
-The main navigation now includes **Workspace**, **Practice lab**, **Learn by concept**, **My study space**, and **What’s new**. These tools use the same released-material list as lessons and assignments. The shared components are `studio.py`, `assets/studio-core.js`, `engine.js`, `runtime.py`, and the page scripts. No application server, student account, or API key is required.
+The main navigation has five sections: **Course**, **Assignments**, **Practice**, **Workspace**, and **My Study**. These tools use the same released-material list as lessons and assignments. The shared components are `studio.py`, `assets/studio-core.js`, `engine.js`, `runtime.py`, and the page scripts. No application server, student account, or API key is required.
+
+### Navigation and responsive layout
+
+Desktop uses a horizontal primary menu and a contextual vertical sidebar. **Course** contains getting started, concepts, resources, links, updates, and released weeks; selecting a week adds its released files. **Assignments** lists released assignments and the current assignment’s materials. **My Study** links to saved materials, queue, bookmarks, notes, backups, and offline downloads. The selected primary section uses `aria-current="true"`; an exact context page uses `aria-current="page"`. A containing week or assignment remains visibly identified while reading one of its files.
+
+**Hide section navigation** expands reading space; its browser-local preference survives page changes. Workspace and Practice already use their file/activity panels as the vertical navigation, so the outer sidebar is hidden on desktop. At widths of 1000 px or less, one navigation button opens the section drawer. Keyboard focus stays inside until it closes; Escape returns focus to the navigation button. The editor and practice pages provide compact file/activity selectors on smaller screens. With JavaScript disabled, the primary and section links remain visible for reading. Navigation is generated from released files; untracked weeks and future assignments never receive links.
+
+Keep primary and context links project-relative. `navigation.py` defines sections and contextual destinations; `assets/navigation.css` supplies the layout, and `assets/site.js` manages the drawer and location markers. When adding a section destination, update the section mapping and acceptance cases together. The navigation acceptance suite checks the five sections, exact selection on deep links, collapse persistence, drawer keyboard behavior, compact selectors, and layouts from 320 to 1440 px. See `docs/navigation-sprints.md` for the delivery gates.
 
 ### Projects and the editor
 
@@ -184,4 +192,4 @@ The **What’s new** page combines a student-facing studio announcement with rec
 
 ### Verification and delivery
 
-`npm test` in `site/browser-tests` runs the original regression suite and the studio acceptance suite. `npm run test:studio` runs the latter alone. It covers project ZIP integrity, generated downloads, strict comparisons/value checks, syntax-only execution, error navigation, bounded traces, all four activity types, backup restoration into another browser, quota rollback, keyboard/mobile/reduced-motion behavior, and actual disconnected Python runs. The sprint plan and acceptance record are in `docs/student-platform-sprints.md`.
+`npm test` in `site/browser-tests` runs navigation acceptance, the original regression suite, and studio acceptance. `npm run test:navigation` and `npm run test:studio` run the focused suites alone. Coverage includes project ZIP integrity, generated downloads, strict comparisons/value checks, syntax-only execution, error navigation, bounded traces, all four activity types, backup restoration into another browser, quota rollback, keyboard/mobile/reduced-motion behavior, and actual disconnected Python runs. The platform sprint plan and acceptance record are in `docs/student-platform-sprints.md`.

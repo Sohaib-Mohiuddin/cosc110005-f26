@@ -52,7 +52,7 @@ server.serve_forever()
     }
     await page.goto(base);
     assert(await page.locator('.assignment-shortcut').isVisible());
-    await page.locator('.sidebar').getByRole('link', {name: 'Assignments', exact: true}).click();
+    await page.locator('#primary-navigation').getByRole('link', {name: 'Assignments', exact: true}).click();
     assert(await page.getByRole('heading', {name: 'Assignments', exact: true}).isVisible());
     if (process.env.SCREENSHOT_DIR) await page.screenshot({path: path.join(process.env.SCREENSHOT_DIR, 'assignments-desktop.png'), fullPage: true});
     const assignmentZip = await page.getByRole('link', {name: 'Download Assignment 1 files (ZIP)'}).getAttribute('href');
@@ -71,14 +71,14 @@ server.serve_forever()
     assert(await page.getByRole('heading', {name: 'Assignment 1: Square Numbers – Iteration', exact: true}).isVisible());
     await page.getByRole('link', {name: 'Open original PDF preview', exact: true}).click();
     assert(await page.locator('.pdf-preview').isVisible());
-    assert.equal(await page.locator('.nav-link.active').textContent(), 'Assignments');
+    assert.equal(await page.locator('#primary-navigation [aria-current="true"]').textContent(), 'Assignments');
     assert.equal(await page.locator('#python-runner').count(), 0);
     await page.getByRole('link', {name: 'Back to Assignment 1', exact: false}).click();
     await page.setViewportSize({width: 390, height: 844});
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
     if (process.env.SCREENSHOT_DIR) await page.screenshot({path: path.join(process.env.SCREENSHOT_DIR, 'assignment-mobile.png'), fullPage: true});
     await page.getByRole('button', {name: 'Toggle navigation'}).click();
-    await page.locator('.sidebar').getByRole('link', {name: 'Assignments', exact: true}).click();
+    await page.locator('.mobile-primary-navigation').getByRole('link', {name: 'Assignments', exact: true}).click();
     assert.equal(await page.locator('.menu-toggle').getAttribute('aria-expanded'), 'false');
     assert(await page.getByRole('link', {name: 'View Assignment 1', exact: true}).isVisible());
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
