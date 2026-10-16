@@ -34,7 +34,7 @@ server.serve_forever()
       base = `http://127.0.0.1:${port}/cosc110005-f26/`;
     }
     browser = await chromium.launch({headless: true, ...(process.env.BROWSER_EXECUTABLE ? {executablePath: process.env.BROWSER_EXECUTABLE} : {})});
-    const context = await browser.newContext({viewport: {width: 1440, height: 1000}, acceptDownloads: true});
+    const context = await browser.newContext({viewport: {width: 1440, height: 1000}, acceptDownloads: true, serviceWorkers: 'block'});
     const page = await context.newPage();
     page.setDefaultTimeout(15000);
     const errors = [];
@@ -68,6 +68,8 @@ server.serve_forever()
     assert.equal(briefResponse.status(), 200);
     assert((await briefResponse.body()).subarray(0, 4).equals(Buffer.from('%PDF')));
     await page.getByRole('link', {name: 'Read brief', exact: true}).click();
+    assert(await page.getByRole('heading', {name: 'Assignment 1: Square Numbers – Iteration', exact: true}).isVisible());
+    await page.getByRole('link', {name: 'Open original PDF preview', exact: true}).click();
     assert(await page.locator('.pdf-preview').isVisible());
     assert.equal(await page.locator('.nav-link.active').textContent(), 'Assignments');
     assert.equal(await page.locator('#python-runner').count(), 0);
@@ -204,7 +206,7 @@ server.serve_forever()
     const response = await staticPage.request.get(new URL(bundle, staticPage.url()).href);
     assert.equal(response.status(), 200);
     assert((await response.body()).subarray(0, 2).equals(Buffer.from('PK')));
-    const blocked = await browser.newContext();
+    const blocked = await browser.newContext({serviceWorkers: 'block'});
     await blocked.addInitScript(() => { Object.defineProperty(window, 'localStorage', {get() { throw new Error('Blocked'); }}); });
     const blockedPage = await blocked.newPage();
     await blockedPage.goto(base + 'view/week-3-demos/01_explore_data_types.py.html');
@@ -214,7 +216,7 @@ server.serve_forever()
     await blockedPage.locator('#run-python').click();
     await blockedPage.waitForFunction(() => !document.querySelector('#run-python').disabled, {}, {timeout: 90000});
     assert((await blockedPage.locator('#python-output').textContent()).includes('unsaved but runnable'));
-    const unavailable = await browser.newContext();
+    const unavailable = await browser.newContext({serviceWorkers: 'block'});
     await unavailable.route('**/assets/python-worker.mjs', route => route.abort());
     const unavailablePage = await unavailable.newPage();
     await unavailablePage.goto(base + 'view/week-3-demos/01_explore_data_types.py.html');

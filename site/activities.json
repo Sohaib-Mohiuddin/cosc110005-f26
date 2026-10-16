@@ -1,0 +1,327 @@
+[
+  {
+    "id": "predict-counter",
+    "type": "predict",
+    "title": "Follow the counter",
+    "topic": "data",
+    "level": "Foundation",
+    "prompt": "What does this program print?",
+    "code": "count = 3\ncount += 2\nprint(count)",
+    "answer": "5",
+    "hints": [
+      "Assignment stores a new value.",
+      "The second line adds two to the existing value."
+    ],
+    "explanation": "The value starts at 3 and becomes 5 before print runs."
+  },
+  {
+    "id": "predict-text",
+    "type": "predict",
+    "title": "Text or number?",
+    "topic": "data",
+    "level": "Foundation",
+    "prompt": "Predict the output, keeping the values on separate lines.",
+    "code": "print(\"3\" + \"2\")\nprint(3 + 2)",
+    "answer": "32\n5",
+    "hints": [
+      "Look at the quote marks.",
+      "Adding strings joins their text; adding integers calculates a sum."
+    ],
+    "explanation": "The quoted values are strings, so the first result is 32. The numeric sum is 5."
+  },
+  {
+    "id": "predict-clean",
+    "type": "predict",
+    "title": "Keep the spaces that matter",
+    "topic": "strings",
+    "level": "Practice",
+    "prompt": "Predict the displayed text.",
+    "code": "name = \"  Jo  Wu  \"\nprint(name.strip().upper())",
+    "answer": "JO  WU",
+    "hints": [
+      "strip() removes surrounding whitespace.",
+      "The two spaces between the names are inside the string."
+    ],
+    "explanation": "The result is uppercase JO, two internal spaces, then WU. strip() preserves those internal spaces."
+  },
+  {
+    "id": "predict-boundary",
+    "type": "predict",
+    "title": "Exactly at the boundary",
+    "topic": "decisions",
+    "level": "Foundation",
+    "prompt": "Which message is printed?",
+    "code": "score = 70\nif score >= 70:\n    print(\"Ready\")\nelse:\n    print(\"Review\")",
+    "answer": "Ready",
+    "hints": [
+      "The comparison includes equality.",
+      "70 is greater than or equal to 70."
+    ],
+    "explanation": "The condition is true at 70, so the first branch prints Ready."
+  },
+  {
+    "id": "predict-total",
+    "type": "predict",
+    "title": "Trace an accumulator",
+    "topic": "loops",
+    "level": "Practice",
+    "prompt": "Predict the final total.",
+    "code": "total = 0\nfor n in range(1, 4):\n    total += n\nprint(total)",
+    "answer": "6",
+    "hints": [
+      "range(1, 4) visits 1, 2 and 3.",
+      "Track total after each addition: 1, then 3, then …"
+    ],
+    "explanation": "The loop adds 1 + 2 + 3, producing 6. The stop value 4 is excluded."
+  },
+  {
+    "id": "fill-convert",
+    "type": "fill",
+    "title": "Convert before arithmetic",
+    "topic": "data",
+    "level": "Foundation",
+    "prompt": "Replace the gap with the conversion function so the program prints 13.",
+    "code": "text = \"12\"\ncount = ___(text)\nprint(count + 1)",
+    "expected": "13\n",
+    "hints": [
+      "The input is text but the calculation needs a whole number.",
+      "Use the built-in conversion for integers."
+    ],
+    "explanation": "int(text) converts the numeric string to an integer before adding one.",
+    "assertions": [
+      {
+        "expression": "count",
+        "expected": 12
+      }
+    ]
+  },
+  {
+    "id": "fill-total",
+    "type": "fill",
+    "title": "Update the running total",
+    "topic": "loops",
+    "level": "Practice",
+    "prompt": "Replace the gap with an operator that adds each n to total.",
+    "code": "total = 0\nfor n in range(1, 4):\n    total ___ n\nprint(total)",
+    "expected": "6\n",
+    "hints": [
+      "Do not replace the total with the current number.",
+      "An augmented assignment can add to the existing value."
+    ],
+    "explanation": "The += operator updates the accumulator instead of resetting it.",
+    "assertions": [
+      {
+        "expression": "total",
+        "expected": 6
+      }
+    ]
+  },
+  {
+    "id": "fill-range",
+    "type": "fill",
+    "title": "Include the last value",
+    "topic": "loops",
+    "level": "Foundation",
+    "prompt": "Replace the gap so the last number printed is 5.",
+    "code": "for n in range(1, ___):\n    print(n)",
+    "expected": "1\n2\n3\n4\n5\n",
+    "hints": [
+      "range() excludes its stop value.",
+      "Choose the integer just after 5."
+    ],
+    "explanation": "A stop value of 6 includes 5 in range(1, 6)."
+  },
+  {
+    "id": "fill-condition",
+    "type": "fill",
+    "title": "Protect a division",
+    "topic": "decisions",
+    "level": "Practice",
+    "prompt": "Replace the gap with a comparison so the empty group takes the safe branch.",
+    "code": "count = 0\nif count ___ 0:\n    print(12 / count)\nelse:\n    print(\"No entries\")",
+    "expected": "No entries\n",
+    "hints": [
+      "The division is safe only for a positive count.",
+      "Check whether count is greater than zero."
+    ],
+    "explanation": "Checking count > 0 keeps the zero count away from the division."
+  },
+  {
+    "id": "arrange-plan",
+    "type": "arrange",
+    "title": "From input to output",
+    "topic": "planning",
+    "level": "Foundation",
+    "prompt": "Arrange the steps to calculate and display a ticket total.",
+    "code": "",
+    "blocks": [
+      {
+        "id": "output",
+        "code": "print(total)"
+      },
+      {
+        "id": "price",
+        "code": "price = 4"
+      },
+      {
+        "id": "calculate",
+        "code": "total = price * quantity"
+      },
+      {
+        "id": "quantity",
+        "code": "quantity = 3"
+      }
+    ],
+    "solution": [
+      "price",
+      "quantity",
+      "calculate",
+      "output"
+    ],
+    "hints": [
+      "Values must exist before the calculation uses them.",
+      "Display the result after the calculation."
+    ],
+    "explanation": "Set the inputs, calculate the total, then display it. The two input assignments may also be swapped.",
+    "alternate_solutions": [
+      [
+        "quantity",
+        "price",
+        "calculate",
+        "output"
+      ]
+    ]
+  },
+  {
+    "id": "arrange-clean",
+    "type": "arrange",
+    "title": "Clean a course label",
+    "topic": "strings",
+    "level": "Foundation",
+    "prompt": "Arrange these statements so the cleaned course code is displayed.",
+    "code": "",
+    "blocks": [
+      {
+        "id": "print",
+        "code": "print(cleaned)"
+      },
+      {
+        "id": "clean",
+        "code": "cleaned = entered.strip().upper()"
+      },
+      {
+        "id": "input",
+        "code": "entered = \" cosc1100 \""
+      }
+    ],
+    "solution": [
+      "input",
+      "clean",
+      "print"
+    ],
+    "hints": [
+      "Keep the original value before cleaning it.",
+      "The print statement needs cleaned to be assigned."
+    ],
+    "explanation": "Assign entered, create cleaned, then print cleaned."
+  },
+  {
+    "id": "arrange-loop",
+    "type": "arrange",
+    "title": "Initialize once",
+    "topic": "loops",
+    "level": "Practice",
+    "prompt": "Arrange the blocks to accumulate the first three positive integers.",
+    "code": "",
+    "blocks": [
+      {
+        "id": "print",
+        "code": "print(total)"
+      },
+      {
+        "id": "loop",
+        "code": "for n in range(1, 4):\n    total += n"
+      },
+      {
+        "id": "init",
+        "code": "total = 0"
+      }
+    ],
+    "solution": [
+      "init",
+      "loop",
+      "print"
+    ],
+    "hints": [
+      "Initialize the accumulator before the loop.",
+      "Display the summary after the loop completes."
+    ],
+    "explanation": "The accumulator starts once outside the loop, then the loop updates it three times."
+  },
+  {
+    "id": "debug-range",
+    "type": "debug",
+    "title": "Find the missing repetition",
+    "topic": "loops",
+    "level": "Practice",
+    "prompt": "Fix the loop so the total is 6. Keep the calculation inside the loop.",
+    "code": "total = 0\nfor n in range(1, 3):\n    total += n\nprint(total)",
+    "expected": "6\n",
+    "hints": [
+      "Trace which values n takes.",
+      "The stop value is excluded from range()."
+    ],
+    "explanation": "range(1, 4) visits 1, 2 and 3. The original stop value excluded 3.",
+    "assertions": [
+      {
+        "expression": "total",
+        "expected": 6
+      }
+    ]
+  },
+  {
+    "id": "debug-types",
+    "type": "debug",
+    "title": "Repair a type mismatch",
+    "topic": "data",
+    "level": "Foundation",
+    "prompt": "Fix the program so it prints 21.",
+    "code": "age = \"20\"\nprint(age + 1)",
+    "expected": "21\n",
+    "hints": [
+      "The variable currently holds a string.",
+      "Convert to an integer before arithmetic."
+    ],
+    "explanation": "Convert age using int(age), or store the original value as an integer."
+  },
+  {
+    "id": "debug-nested",
+    "type": "debug",
+    "title": "Reset the inner counter",
+    "topic": "nested",
+    "level": "Challenge",
+    "prompt": "Repair the counters so both rows print two stars.",
+    "code": "column = 0\nfor row in range(2):\n    line = \"\"\n    while column < 2:\n        line += \"*\"\n        column += 1\n    print(line)",
+    "expected": "**\n**\n",
+    "hints": [
+      "What is column when the second row starts?",
+      "Each outer iteration needs a fresh inner-loop counter."
+    ],
+    "explanation": "Move column = 0 inside the outer loop so both rows start counting from zero."
+  },
+  {
+    "id": "predict-validation",
+    "type": "predict",
+    "title": "Convert or reject?",
+    "topic": "validation",
+    "level": "Foundation",
+    "prompt": "Which message is printed?",
+    "code": "text = \"three\"\ntry:\n    value = int(text)\n    print(\"Converted\")\nexcept ValueError:\n    print(\"Whole numbers only\")",
+    "answer": "Whole numbers only",
+    "hints": [
+      "int() needs numeric text.",
+      "The except block handles the failed conversion."
+    ],
+    "explanation": "The word three cannot be converted with int(), so the ValueError handler runs."
+  }
+]

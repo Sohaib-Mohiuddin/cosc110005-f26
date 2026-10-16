@@ -1,0 +1,92 @@
+[
+  {
+    "term": "Variables",
+    "description": "Assignment gives a name a value. Names are case-sensitive.",
+    "example": "count = 3\ncount = count + 1"
+  },
+  {
+    "term": "int()",
+    "description": "Convert suitable text or numbers to an integer. Invalid numeric text raises ValueError.",
+    "example": "count = int(\"12\")"
+  },
+  {
+    "term": "float()",
+    "description": "Convert suitable text or numbers to a decimal value.",
+    "example": "price = float(\"2.50\")"
+  },
+  {
+    "term": "input()",
+    "description": "Read one line of text. In the browser, put answers in Program input before running.",
+    "example": "name = input(\"Name: \")"
+  },
+  {
+    "term": "print()",
+    "description": "Display values. Use end= to change the final newline.",
+    "example": "print(\"Hello\", name)"
+  },
+  {
+    "term": "range()",
+    "description": "Produce integer values up to, but excluding, the stop value.",
+    "example": "for n in range(1, 4):\n    print(n)"
+  },
+  {
+    "term": "if / elif / else",
+    "description": "Choose one branch according to conditions. Indentation defines each branch.",
+    "example": "if score >= 70:\n    print(\"Ready\")\nelse:\n    print(\"Review\")"
+  },
+  {
+    "term": "while loops",
+    "description": "Repeat while a condition is true. Make progress toward a stopping condition.",
+    "example": "count = 0\nwhile count < 3:\n    count += 1"
+  },
+  {
+    "term": "Accumulators",
+    "description": "Initialize a running total before the loop, then update it inside.",
+    "example": "total = 0\nfor n in range(4):\n    total += n"
+  },
+  {
+    "term": "Boolean operators",
+    "description": "and requires both conditions; or requires either; not reverses truth.",
+    "example": "can_enter = trained and not suspended"
+  },
+  {
+    "term": "String methods",
+    "description": "Methods return changed strings; strings themselves are immutable.",
+    "example": "cleaned = entered.strip().upper()"
+  },
+  {
+    "term": "f-strings",
+    "description": "Insert values into text and choose a display format.",
+    "example": "print(f\"Total: ${total:.2f}\")"
+  },
+  {
+    "term": "len()",
+    "description": "Count items in a sequence or characters in a string.",
+    "example": "letters = len(\"Python\")"
+  },
+  {
+    "term": "try / except",
+    "description": "Handle expected errors near the operation that may fail.",
+    "example": "try:\n    count = int(text)\nexcept ValueError:\n    print(\"Enter a whole number\")"
+  },
+  {
+    "term": "Division and remainder",
+    "description": "/ divides, // computes floor division, and % gives the remainder.",
+    "example": "minutes = seconds // 60\nremaining = seconds % 60"
+  },
+  {
+    "term": "Trace tables",
+    "description": "Record values before and after each step to explain program behavior.",
+    "example": "step | counter | total\n  1  |    1    |   1"
+  },
+  {
+    "term": "Lists",
+    "description": "Store an ordered collection. Indexes start at zero.",
+    "example": "scores = [70, 85, 90]\nprint(scores[0])"
+  },
+  {
+    "term": "Functions",
+    "description": "Name a reusable operation. Parameters receive inputs; return passes a result back.",
+    "example": "def double(value):\n    return value * 2"
+  }
+]

@@ -8,6 +8,16 @@ Browse by week, search topics and code, run and edit console examples in your br
 
 Open [Assignments](https://sohaib-mohiuddin.github.io/cosc110005-f26/assignments.html) for released assignment briefs and supporting files. Each assignment has its own page, PDF/download options, and a complete ZIP. Follow the brief for submission instructions and due dates.
 
+## Your student studio
+
+- [Workspace](https://sohaib-mohiuddin.github.io/cosc110005-f26/workspace.html): create multi-file Python projects, open your own files, run or trace code, and export a ZIP.
+- [Practice lab](https://sohaib-mohiuddin.github.io/cosc110005-f26/practice.html): predict output, complete code, arrange statements, and debug with hints and explanations.
+- [Learn by concept](https://sohaib-mohiuddin.github.io/cosc110005-f26/concepts.html): follow prerequisites and find related examples and activities.
+- [My study space](https://sohaib-mohiuddin.github.io/cosc110005-f26/study.html): revisit bookmarks/notes, export or restore a study backup, and prepare selected lessons for offline use.
+- [What’s new](https://sohaib-mohiuddin.github.io/cosc110005-f26/updates.html): see released and updated course materials.
+
+Use **Reference** for syntax reminders and **Display** for appearance, spacing, and motion controls. Device reduced-motion settings are respected. Projects and progress stay on this browser until you export them; use DC Connect to submit assessed work as instructed in the assignment brief.
+
 ## Available materials
 
 | Folder | Topics |

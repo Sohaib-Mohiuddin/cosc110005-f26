@@ -1,6 +1,11 @@
 {
   "name": "cosc-course-browser-checks",
   "private": true,
-  "scripts": {"test": "node smoke.cjs"},
-  "devDependencies": {"playwright": "1.63.0"}
+  "scripts": {
+    "test": "node smoke.cjs && node studio.cjs",
+    "test:studio": "node studio.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
 }

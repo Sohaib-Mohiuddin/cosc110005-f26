@@ -15,6 +15,7 @@ from pathlib import Path
 from urllib.parse import quote, unquote, urlsplit
 
 from learning import Learning, json_script
+from studio import Studio
 
 ROOT = Path(__file__).resolve().parents[1]
 SUPPORTED = {'.py', '.md', '.pdf', '.txt', '.csv', '.json', '.ipynb', '.pptx', '.docx', '.xlsx', '.zip', '.png', '.jpg', '.jpeg', '.svg', '.webp'}
@@ -168,7 +169,10 @@ class Site:
             info = self.assignment_info(number)
             if info['brief'] and info['brief']['kind'] == 'PDF':
                 info['brief']['title'] = f'Assignment {number} brief · {info["title"]}'
+            if info.get('reading'):
+                info['reading']['title'] = f'Assignment {number} readable brief'
         self.learning = Learning(self)
+        self.studio = Studio(self)
 
     def week_info(self, week):
         info = self.config.get('weeks', {}).get(str(week), {})
@@ -191,7 +195,7 @@ class Site:
                 'description': info.get('description', 'Read the instructions, plan your approach, and work through the assignment materials.'),
                 'submission': info.get('submission', ''), 'preparation': info.get('preparation', ''),
                 'related_weeks': [week for week in info.get('related_weeks', []) if week in self.weeks],
-                'folder': folder, 'items': items, 'brief': brief, 'guide': guide}
+                'folder': folder, 'items': items, 'brief': brief, 'guide': guide, 'reading': self.by_path.get(folder + '/brief.md')}
 
     def assignment_label(self, number):
         title = self.assignment_info(number)['title']
@@ -286,15 +290,17 @@ class Site:
             selected = active == key
             return f'<a class="nav-link{" active" if selected else ""}" href="{self.link(target, current)}"{chr(32) + "aria-current=\"page\"" if selected else ""}>{symbol}{label}</a>'
         menu = nav('index.html', 'Course overview', icon('grid'), 'overview') + nav('getting-started.html', 'Getting started', icon('code'), 'start') + nav('assignments.html', 'Assignments', icon('file'), 'assignments') + nav('resources.html', 'Exercises & resources', icon('book'), 'resources') + nav('links.html', 'Course links', icon('book'), 'links')
+        studio_menu = nav('workspace.html', 'Workspace', icon('code'), 'workspace') + nav('practice.html', 'Practice lab', icon('file'), 'practice') + nav('concepts.html', 'Learn by concept', icon('book'), 'concepts') + nav('study.html', 'My study space', icon('grid'), 'study') + nav('updates.html', 'What’s new', icon('branch'), 'updates')
+        menu = studio_menu + menu
         if 'Midterm Preparation/README.md' in self.by_path:
             menu += nav(self.by_path['Midterm Preparation/README.md']['url'], 'Midterm preparation', icon('book'), 'midterm')
         menu += f'<a class="nav-link" href="{prefix}index.html#weekly-materials">{icon("search")}Search materials</a>'
         weekly = ''.join(nav(f'weeks/week-{week}.html', f'Week {week:02d}', f'<span class="week-dot">{week:02d}</span>', f'week-{week}') for week in self.weeks)
         page = f'''<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Python demonstrations, weekly materials, and practice for {esc(self.config['code'])}. Read the code, try it yourself, and learn one step at a time."><meta name="theme-color" content="#23674b"><title>{esc(title)} · {esc(self.config['code'])}</title><link rel="icon" href="{prefix}assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="{prefix}assets/site.css"><script src="{prefix}assets/site.js" defer></script></head>
-<body data-root="{prefix}"><a class="skip" href="#main">Skip to content</a>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Python demonstrations, weekly materials, and practice for {esc(self.config['code'])}. Read the code, try it yourself, and learn one step at a time."><meta name="theme-color" content="#23674b"><title>{esc(title)} · {esc(self.config['code'])}</title><link rel="icon" href="{prefix}assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="{prefix}assets/site.css"><link rel="manifest" href="{prefix}site.webmanifest"><link rel="stylesheet" href="{prefix}assets/studio.css"><script src="{prefix}assets/studio-core.js" defer></script><script src="{prefix}assets/engine.js" defer></script><script src="{prefix}assets/site.js" defer></script><script src="{prefix}assets/studio.js" defer></script></head>
+<body data-root="{prefix}"><div class="ambient-scene" aria-hidden="true"><i></i><i></i><i></i><span class="ambient-grid"></span></div><a class="skip" href="#main">Skip to content</a>
 <aside class="sidebar" id="course-navigation" aria-label="Course navigation"><a class="brand" href="{prefix}index.html"><span class="brand-icon">&lt;/&gt;</span><span>{esc(self.config['code'])}<small>THE PYTHON CLASSROOM</small></span></a><p class="nav-label">YOUR CLASSROOM</p><nav aria-label="Main">{menu}</nav><p class="nav-label weeks-label">WEEKLY MATERIALS</p><nav aria-label="Weeks">{weekly}</nav><div class="sidebar-bottom"><div class="sidebar-note"><strong>Small steps. Real progress.</strong>Read it. Trace it. Run it.<br>Then make it your own.</div><a href="{esc(self.config['repository'])}">{icon('branch')} View repository <span aria-hidden="true">↗</span></a></div></aside>
-<div class="shell"><header class="topbar"><button class="menu-toggle" aria-label="Toggle navigation" aria-controls="course-navigation" aria-expanded="false">{icon('menu')}</button><span><strong>Course materials</strong><span class="course-name"> &nbsp; / &nbsp; {esc(self.config['name'])}</span></span><span class="term"><span class="status-dot"></span>{esc(self.config['term'])}</span></header><main class="content" id="main">{body}<footer class="footer"><span>{esc(self.config['code'])} · {esc(self.config['term'])} · {esc(self.config['instructor'])}</span><span><a href="{esc(self.config['repository'])}">Made for learning, shared on GitHub ↗</a></span></footer></main></div></body></html>'''
+<div class="shell"><header class="topbar"><button class="menu-toggle" aria-label="Toggle navigation" aria-controls="course-navigation" aria-expanded="false">{icon('menu')}</button><span><strong>Course materials</strong><span class="course-name"> &nbsp; / &nbsp; {esc(self.config['name'])}</span></span><div class="topbar-tools"><button class="button small" id="open-reference" type="button">Reference</button><button class="button small" id="open-display" type="button">Display</button><span class="term"><span class="status-dot"></span>{esc(self.config['term'])}</span></div></header><main class="content" id="main">{body}<footer class="footer"><span>{esc(self.config['code'])} · {esc(self.config['term'])} · {esc(self.config['instructor'])}</span><span><a href="{esc(self.config['repository'])}">Made for learning, shared on GitHub ↗</a></span></footer></main></div><dialog id="reference-dialog" class="studio-dialog"><div class="section-heading"><h2>Quick reference</h2><button class="button small" data-close-dialog type="button">Close reference</button></div><label>Find a term<input id="reference-search" type="search" placeholder="range, strings, loops…"></label><div id="reference-results"></div></dialog><dialog id="display-dialog" class="studio-dialog"><div class="section-heading"><h2>Make it comfortable</h2><button class="button small" data-close-dialog type="button">Close display settings</button></div><label>Appearance<select id="site-theme"><option value="system">Use device setting</option><option value="light">Light</option><option value="dark">Dark</option><option value="contrast">High contrast</option></select></label><label>Code text size<select id="studio-code-size"><option value="14">Standard</option><option value="16">Large</option><option value="18">Extra large</option></select></label><label><input id="studio-code-wrap" type="checkbox"> Wrap code lines</label><label>Spacing<select id="site-spacing"><option value="comfortable">Comfortable</option><option value="compact">Compact</option></select></label><label><input id="site-motion" type="checkbox"> Animate background</label><p class="reading-label">Reduced-motion preferences on your device always stop decorative animation.</p><button class="button" id="pause-motion" type="button">Pause background</button></dialog></body></html>'''
         path = self.out / current
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(page, encoding='utf-8')
@@ -309,7 +315,7 @@ class Site:
 
     def build(self):
         self.out.mkdir(parents=True, exist_ok=True)
-        shutil.copytree(self.root / 'site/assets', self.out / 'assets', dirs_exist_ok=True)
+        shutil.copytree(self.root / 'site/assets', self.out / 'assets', dirs_exist_ok=True, ignore=shutil.ignore_patterns('__pycache__', '*.pyc', '*.pyo'))
         (self.out / '.nojekyll').touch()
         for item in self.files:
             dest = self.out / 'downloads' / item['path']
@@ -325,6 +331,7 @@ class Site:
             self.week(week)
         for item in self.files:
             self.viewer(item)
+        self.studio.build()
         print(f'Built {len(self.files)} materials across {len(self.weeks)} weeks in {self.out}')
 
     def home(self):
@@ -359,7 +366,7 @@ class Site:
             assignment_card = f'<a class="resource-card assignment-shortcut" href="assignments.html"><span class="resource-icon">{icon("file")}</span><span><strong>Assignments</strong><small>{total} {"assignment" if total == 1 else "assignments"} available · Read the brief and get the files.</small></span><span class="arrow" aria-hidden="true">→</span></a>'
             current_card = '<div class="classroom-shortcuts">' + current_card + assignment_card + '</div>'
         data = json_script(entries)
-        self.write('index.html', 'Your Python classroom', f'''<section class="hero"><div><p class="eyebrow">A LITTLE CURIOSITY. A LOT OF POSSIBILITY.</p><h1>Your next line<br>starts here<span style="color:#7d9a56">.</span></h1><p>Your home for Python examples, classroom exercises, and those “oh, now I get it” moments. Pick a week and explore.</p><div class="hero-actions"><a class="button primary" href="#weekly-materials">Explore the materials {icon('arrow')}</a><a class="button-link" href="getting-started.html">New to Python? Start here ↗</a></div></div><div class="hello-art" aria-label="Python example: print Hello, world!"><div class="art-grid"></div><div class="code-window"><div class="code-top"><i></i><i></i><i></i><span>your_first_program.py</span></div><pre><span class="dim"># Every programmer starts somewhere.</span>
+        self.write('index.html', 'Your Python classroom', f'''<section class="hero"><div><p class="eyebrow">YOUR PYTHON STUDY STUDIO</p><h1>Build a little.<br>Understand more<span style="color:#7d9a56">.</span></h1><p>Explore a lesson, test an idea, or work on your own Python project. Your next step starts with a little curiosity.</p><div class="hero-actions"><a class="button primary" href="workspace.html">Open workspace</a><a class="button" href="practice.html">Try a challenge</a><a class="button-link" href="#weekly-materials">Explore the materials {icon('arrow')}</a><a class="button-link" href="getting-started.html">New to Python? Start here ↗</a></div></div><div class="hello-art" aria-label="Python example: print Hello, world!"><div class="art-grid"></div><div class="code-window"><div class="code-top"><i></i><i></i><i></i><span>your_first_program.py</span></div><pre><span class="dim"># Every programmer starts somewhere.</span>
 <span class="yellow">message</span> = <span class="yellow">"Hello, world!"</span>
 print(message)
 <span class="output">&gt; Hello, world!</span></pre></div><span class="art-note">One line at a time ✦</span></div></section>
@@ -391,7 +398,7 @@ print(message)
         if brief:
             download = self.link('downloads/' + quote(brief['path'], safe='/'), current)
             size = max(1, round((self.root / brief['path']).stat().st_size / 1024))
-            body += f'<section class="assignment-brief" aria-labelledby="brief-heading"><div><span class="eyebrow">START HERE</span><h2 id="brief-heading">Read the assignment brief</h2><p>Read the full requirements before you start your plan and code.</p><small>{esc(Path(brief["path"]).name)} · {esc(brief["kind"])} · {size:,} KB</small></div><div class="assignment-actions"><a class="button primary" href="{self.link(brief["url"], current)}">Read brief {icon("arrow")}</a><a class="button" href="{download}" download>Download brief ({esc(brief["kind"])})</a></div></section>'
+            body += f'<section class="assignment-brief" aria-labelledby="brief-heading"><div><span class="eyebrow">START HERE</span><h2 id="brief-heading">Read the assignment brief</h2><p>Read the full requirements before you start your plan and code.</p><small>{esc(Path(brief["path"]).name)} · {esc(brief["kind"])} · {size:,} KB</small></div><div class="assignment-actions"><a class="button primary" href="{self.link((info['reading'] or brief)["url"], current)}">Read brief {icon("arrow")}</a><a class="button" href="{download}" download>Download brief ({esc(brief["kind"])})</a></div></section>'
         if info['preparation'] or info['related_weeks']:
             body += '<section class="assignment-preparation" aria-labelledby="preparation-heading"><h2 id="preparation-heading">Before you begin</h2>'
             if info['preparation']:
@@ -458,7 +465,13 @@ print(message)
         if item['kind'] == 'PDF':
             body += f'<a class="button" href="{download}">Open PDF ↗</a>'
         body += '</div>'
+        body += f'<section class="material-study" data-study-path="{esc(source)}" data-study-title="{esc(item["title"])}" hidden><div class="runner-actions"><button class="button small" data-bookmark type="button" aria-pressed="false">Bookmark</button><label><input type="checkbox" data-queue> Add to study queue</label><label>Understanding<select data-confidence aria-label="Understanding"><option value="">Choose a status</option><option>Revisit</option><option>Practising</option><option>Comfortable</option></select></label></div><details><summary>My notes for this material</summary><label>Private study notes<textarea data-note rows="4" maxlength="12000"></textarea></label></details><p data-study-status role="status"></p></section>'
         if assignment is not None:
+            info = self.assignment_info(assignment)
+            if info.get('reading') and item is info['reading'] and info['brief']:
+                body += f'<p><a class="button" href="{self.link(info["brief"]["url"], current)}">Open original PDF preview</a></p>'
+            elif info.get('reading') and item is info['brief']:
+                body += f'<p><a class="button" href="{self.link(info["reading"]["url"], current)}">Read accessible version</a></p>'
             body += f'<p class="assignment-context"><a href="{self.link(f"assignments/assignment-{assignment}.html", current)}">← Back to Assignment {assignment}</a> · Read the full brief for requirements and submission instructions.</p>'
         if item['kind'] == 'PY':
             bundle_label = 'Download assignment ZIP' if assignment is not None else 'Download complete lesson ZIP'
@@ -467,7 +480,10 @@ print(message)
             body += f'<p class="reading-label">Read the comments, predict the output, then try the example in your browser or on your computer.</p><div class="source"><div class="source-header"><span>{esc(Path(source).name)}</span><button data-copy type="button">Copy code</button></div><pre tabindex="0" aria-label="Python source code"><code id="source-code">{highlight_python(item["text"])}</code></pre></div><p id="copy-status" class="reading-label" role="status" aria-live="polite"></p>'
             body += f'<details class="run-help"><summary>How do I run this example?</summary><p>Download the repository ZIP from the getting started guide and extract it. Open a terminal in the extracted course folder, then use the command for your computer. Compatible examples can also run in the browser editor above. Desktop Python is needed for GUI and system tools.</p><h3>Windows</h3><code>py "{esc(source)}"</code><h3>macOS / Linux</h3><code>python3 "{esc(source)}"</code><p>Some programs ask you to type answers in the terminal. If a demo imports another course file, keep those files together.</p><a class="button-link" href="{self.link("getting-started.html", current)}">Full getting started guide {icon("arrow")}</a></details>'
         elif item['kind'] == 'MD':
-            body += '<article class="prose">' + self.markdown(item['text'], source, current) + '</article>'
+            rendered = self.markdown(item['text'], source, current)
+            if assignment is not None and self.assignment_info(assignment).get('reading') is item:
+                rendered = rendered.replace('<h1>', '<h2>', 1).replace('</h1>', '</h2>', 1)
+            body += '<article class="prose">' + rendered + '</article>'
         elif item['kind'] == 'PDF':
             body += f'<p class="reading-label">If the preview is unavailable on your device, use Open PDF or Download PDF above.</p><iframe class="pdf-preview" src="{download}" title="{esc(item["title"])} PDF preview" loading="lazy"></iframe>'
         elif item['text']:

@@ -1,0 +1,8 @@
+{
+  "week-3-demos/01_explore_data_types.py": [
+    {"expression": "participant_count", "expected": 20},
+    {"expression": "type(participant_count).__name__", "expected": "int"},
+    {"expression": "session_hours", "expected": 1.5, "tolerance": 0.000001},
+    {"expression": "type(registration_open).__name__", "expected": "bool"}
+  ]
+}

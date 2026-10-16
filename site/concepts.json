@@ -1,0 +1,108 @@
+[
+  {
+    "id": "planning",
+    "title": "Planning & tracing",
+    "week": 2,
+    "level": "Foundation",
+    "description": "Identify inputs, processing and outputs. Trace an algorithm before turning it into Python.",
+    "prerequisites": [],
+    "patterns": [
+      "week-2-demos/*.py",
+      "utilities/trace_table.md"
+    ]
+  },
+  {
+    "id": "data",
+    "title": "Variables & types",
+    "week": 3,
+    "level": "Foundation",
+    "description": "Store values, choose their types, and convert input text before doing arithmetic.",
+    "prerequisites": [
+      "planning"
+    ],
+    "patterns": [
+      "week-3-demos/01*.py",
+      "week-3-demos/02*.py",
+      "Midterm Preparation/05*.py",
+      "Midterm Preparation/06*.py"
+    ]
+  },
+  {
+    "id": "strings",
+    "title": "Strings & formatting",
+    "week": 3,
+    "level": "Foundation",
+    "description": "Clean text, preserve meaningful spaces, and format values for a reader.",
+    "prerequisites": [
+      "data"
+    ],
+    "patterns": [
+      "week-3-demos/*string*.py",
+      "week-3-demos/*format*.py",
+      "Midterm Preparation/08*.py"
+    ]
+  },
+  {
+    "id": "decisions",
+    "title": "Conditions & decisions",
+    "week": 4,
+    "level": "Foundation",
+    "description": "Choose a path using comparisons and Boolean expressions. Check the boundaries between branches.",
+    "prerequisites": [
+      "data"
+    ],
+    "patterns": [
+      "week-4-demos/*.py",
+      "Midterm Preparation/10*.py",
+      "Midterm Preparation/11*.py"
+    ]
+  },
+  {
+    "id": "loops",
+    "title": "Loops & accumulation",
+    "week": 5,
+    "level": "Practice",
+    "description": "Repeat work with a counter, an accumulator, or a sentinel. Explain what makes the loop stop.",
+    "prerequisites": [
+      "decisions"
+    ],
+    "patterns": [
+      "week-5-demos/*.py",
+      "Midterm Preparation/15*.py",
+      "Midterm Preparation/17*.py"
+    ]
+  },
+  {
+    "id": "validation",
+    "title": "Input validation",
+    "week": 4,
+    "level": "Practice",
+    "description": "Separate conversion errors from invalid ranges and guide the user toward a valid answer.",
+    "prerequisites": [
+      "data",
+      "decisions"
+    ],
+    "patterns": [
+      "week-4-demos/*valid*.py",
+      "week-6-demos/01*.py",
+      "week-7-demos/04*.py",
+      "Midterm Preparation/13*.py"
+    ]
+  },
+  {
+    "id": "nested",
+    "title": "Nested loops & debugging",
+    "week": 6,
+    "level": "Challenge",
+    "description": "Track the inner and outer loop separately. Use small inputs to find off-by-one and reset errors.",
+    "prerequisites": [
+      "loops"
+    ],
+    "patterns": [
+      "week-6-demos/02*.py",
+      "week-6-demos/04*.py",
+      "week-6-demos/07*.py",
+      "week-6-demos/08*.py"
+    ]
+  }
+]
