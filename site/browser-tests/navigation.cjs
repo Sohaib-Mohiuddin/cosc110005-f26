@@ -73,6 +73,9 @@ withSite(async({browser,base})=>{
  for(let step=0;step<24;step++){await page.keyboard.press('Tab');assert(await sidebar.evaluate(element=>element.contains(document.activeElement)),'Tab must stay inside the open drawer');}
  await page.keyboard.press('Escape');assert.equal(await menu.getAttribute('aria-expanded'),'false');
  assert.equal(await page.locator('#main').evaluate(element=>element.inert),false);assert(await menu.evaluate(element=>element===document.activeElement));
+ await menu.click();assert.equal(await menu.getAttribute('aria-expanded'),'true');await menu.click();
+ assert.equal(await menu.getAttribute('aria-expanded'),'false');assert.equal(await page.locator('#main').evaluate(element=>element.inert),false);
+ assert.equal(await sidebar.evaluate(element=>element.inert),true);assert(await menu.evaluate(element=>element===document.activeElement));
  await menu.click();await page.locator('#navigation-backdrop').click({position:{x:385,y:750}});
  assert.equal(await menu.getAttribute('aria-expanded'),'false');
  await menu.click();await drawerPrimary.getByRole('link',{name:'Practice',exact:true}).click();
@@ -97,6 +100,29 @@ withSite(async({browser,base})=>{
  assert(!(await page.locator('#workspace-editor').evaluate(element=>element===document.activeElement)));
  await noOverflow('mobile editor with selected project file');
  await menu.click();await page.setViewportSize({width:1440,height:1000});
+ await page.waitForFunction(()=>document.querySelector('#primary-navigation [aria-current="true"]')===document.activeElement);
+ await page.setViewportSize({width:390,height:844});await page.waitForFunction(()=>document.querySelector('.menu-toggle')===document.activeElement);
+ for(let crossing=0;crossing<3;crossing++){
+  await page.setViewportSize({width:1440,height:1000});
+  await page.waitForFunction(()=>document.querySelector('#primary-navigation [aria-current="true"]')===document.activeElement);
+  await page.setViewportSize({width:390,height:844});
+  await page.waitForFunction(()=>document.querySelector('.menu-toggle')===document.activeElement);
+ }
+ await go('view/week-3-demos/01_explore_data_types.py.html');await page.setViewportSize({width:1440,height:1000});
+ await sidebar.locator('[aria-current="page"]').focus();
+ await page.waitForFunction(()=>document.querySelector('#course-navigation [aria-current="page"]')===document.activeElement);
+ await page.setViewportSize({width:390,height:844});
+ await page.waitForFunction(()=>document.querySelector('.menu-toggle')===document.activeElement);
+ await page.setViewportSize({width:1440,height:1000});
+ await page.waitForFunction(()=>document.querySelector('#primary-navigation [aria-current="true"]')===document.activeElement);
+ await page.locator('#section-toggle').focus();await page.setViewportSize({width:390,height:844});
+ await page.waitForFunction(()=>document.querySelector('.menu-toggle')===document.activeElement);
+ await go('workspace.html');await page.setViewportSize({width:1440,height:1000});await page.locator('#workspace-editor').focus();
+ await page.waitForFunction(()=>document.querySelector('#workspace-editor')===document.activeElement);
+ await page.setViewportSize({width:390,height:844});
+ await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+ assert(await page.locator('#workspace-editor').evaluate(element=>element===document.activeElement),'Resize must preserve focus in an editor that stays available');
+ await menu.focus();await page.setViewportSize({width:1440,height:1000});
  await page.waitForFunction(()=>document.querySelector('#primary-navigation [aria-current="true"]')===document.activeElement);
  await page.setViewportSize({width:390,height:844});await page.waitForFunction(()=>document.querySelector('.menu-toggle')===document.activeElement);
  if(process.env.SCREENSHOT_DIR){await page.screenshot({path:path.join(process.env.SCREENSHOT_DIR,'navigation-workspace-mobile.png'),fullPage:true});await go('index.html');await menu.click();await page.screenshot({path:path.join(process.env.SCREENSHOT_DIR,'navigation-drawer-mobile.png')});await page.keyboard.press('Escape');await page.setViewportSize({width:1440,height:1000});await page.screenshot({path:path.join(process.env.SCREENSHOT_DIR,'navigation-desktop.png'),fullPage:true});}

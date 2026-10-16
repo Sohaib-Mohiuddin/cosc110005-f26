@@ -13,19 +13,29 @@
   const mobile = window.matchMedia('(max-width: 1000px)');
   let collapsed = C.read('navigation', {}).collapsed === true;
   let open = false;
+  let appliedMobile = mobile.matches;
+  let lastFocus = null;
   document.body.classList.add('js-navigation');
+
+  // A browser can blur a link as CSS hides it, before the media event arrives.
+  document.addEventListener('focusin', event => {
+    if (![document.body, document.documentElement].includes(event.target)) lastFocus = event.target;
+  });
+  document.addEventListener('focusout', event => {
+    if (!event.relatedTarget && mobile.matches === appliedMobile) lastFocus = null;
+  });
 
   function sync() {
     const narrow = mobile.matches;
     document.body.dataset.navigation = collapsed ? 'collapsed' : 'expanded';
     document.body.classList.toggle('nav-open', narrow && open);
     menu.setAttribute('aria-expanded', String(narrow && open));
+    for (const control of header.children) control.inert = narrow && open && control !== menu;
     primary.inert = narrow;
     mobilePrimary.inert = !narrow;
     sidebar.inert = narrow ? !open : collapsed || document.body.dataset.layout === 'embedded';
     main.inert = narrow && open;
     shell.inert = narrow && open;
-    header.inert = narrow && open;
     backdrop.hidden = !(narrow && open);
     collapse.setAttribute('aria-expanded', String(!collapsed));
     collapse.setAttribute('aria-label', collapsed ? 'Show section navigation' : 'Hide section navigation');
@@ -54,16 +64,20 @@
     sync();
   });
   mobile.addEventListener('change', () => {
-    const focusWasInside = sidebar.contains(document.activeElement);
-    const focusWasPrimary = primary.contains(document.activeElement);
+    const focused = [document.body, document.documentElement].includes(document.activeElement) ? lastFocus : document.activeElement;
+    const focusWasInside = focused && sidebar.contains(focused);
+    const focusWasPrimary = focused && primary.contains(focused);
+    const focusWasMenu = focused === menu;
+    const focusWasCollapse = focused === collapse;
     const wasOpen = open;
     open = false;
     sync();
-    if (mobile.matches && (focusWasInside || focusWasPrimary)) menu.focus();
-    else if ((focusWasInside || wasOpen) && (sidebar.inert || !document.activeElement.getClientRects().length)) {
-      const target = document.body.dataset.layout === 'embedded' ? primary.querySelector('[aria-current]') : collapse;
+    if (mobile.matches && (focusWasInside || focusWasPrimary || focusWasCollapse)) menu.focus();
+    else if (!mobile.matches && (focusWasMenu || (focusWasInside || wasOpen) && (sidebar.inert || !focused?.getClientRects().length))) {
+      const target = focusWasMenu || document.body.dataset.layout === 'embedded' ? primary.querySelector('[aria-current]') : collapse;
       target.focus();
     }
+    appliedMobile = mobile.matches;
   });
   document.addEventListener('keydown', event => {
     if (!open || !mobile.matches) return;
