@@ -69,6 +69,8 @@ Python tests verify discovery, exclusion of untracked weeks, dependency bundles,
 
 Repository **Settings → Pages → Build and deployment → Source** must be **GitHub Actions**. The workflow builds on pushes to `main` and publishes with the official Pages actions. Pull requests run checks and build but do not deploy. You can also trigger **Publish course site** manually from Actions. The deployment uses relative links, so it works at the repository's project URL without a custom domain.
 
+If a committed week is missing from the live site, check the **Publish course site** run for that commit first. A failed validation leaves the previous successful deployment online. Release checks must compare navigation and update links against the generated released-material inventory; do not permanently classify a numbered week as unpublished. Isolated test fixtures can still include untracked future weeks to verify that private materials stay excluded.
+
 ## Site files
 
 - `site/course.json`: course details and optional weekly presentation.

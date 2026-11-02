@@ -58,7 +58,23 @@ withSite(async({browser,base})=>{
  await page.locator('#activity-topic').selectOption('loops');await page.locator('#activity-list button').filter({hasText:'Initialize once'}).click();await page.getByRole('button',{name:'Move block 3 up',exact:true}).click();await page.getByRole('button',{name:'Move block 2 up',exact:true}).click();await page.getByRole('button',{name:'Move block 3 up',exact:true}).click();await page.getByRole('button',{name:'Check my attempt',exact:true}).click();assert((await page.locator('#activity-feedback').textContent()).includes('valid order'));
  await go('concepts.html');assert(await page.locator('#loops .list .file-row').count());assert(await page.locator('#nested a[href="#loops"]').count());
  await go('assignments/assignment-1.html');await page.getByRole('link',{name:'Read brief',exact:true}).click();assert(await page.getByRole('heading',{name:'Academic integrity',exact:true}).isVisible());assert((await page.locator('.prose').textContent()).includes('100 (10 squared)'));assert(await page.getByRole('link',{name:'Open original PDF preview',exact:true}).isVisible());
- await go('updates.html');assert(await page.locator('.news-row').count());assert(!(await page.locator('.news-row').allTextContents()).join(' ').includes('week-8-demos'));
+ await go('updates.html');assert(await page.locator('.news-row').count());
+ const released=await page.evaluate(()=>Course.data()),releasedByPath=new Map(released.materials.map(item=>[item.path,item]));
+ const updates=await page.locator('.news-row').evaluateAll(rows=>rows.map(row=>({path:row.querySelector('small').textContent.trim(),url:row.querySelector('a').href})));
+ for(const update of updates){const material=releasedByPath.get(update.path);assert(material,'Update must reference a released material: '+update.path);assert.equal(update.url,new URL(material.url,base).href);}
+ const releasedWeeks=[...new Set(released.materials.map(item=>item.week).filter(week=>week!==null))].sort((a,b)=>a-b);
+ await go('index.html');
+ const weekLink=week=>page.locator('nav[aria-label="Released weeks"]').getByRole('link',{name:new RegExp('Week '+String(week).padStart(2,'0')+'$')});
+ for(const week of releasedWeeks)assert.equal(await weekLink(week).count(),1);
+ const latestWeek=releasedWeeks.at(-1);assert(latestWeek!==undefined,'The course must contain a released week');
+ await weekLink(latestWeek).click();
+ assert.equal(new URL(page.url()).href,new URL('weeks/week-'+latestWeek+'.html',base).href);
+ const lessonURLs=new Set(await page.locator('.file-row').evaluateAll(links=>links.map(link=>link.href)));
+ for(const material of released.materials.filter(item=>item.week===latestWeek)){
+  if(material.path==='week-'+latestWeek+'-demos/README.md')assert(await page.locator('section[aria-label="Weekly guide"]').isVisible(),'Latest week must render its guide');
+  else assert(lessonURLs.has(new URL(material.url,base).href),'Latest week must list '+material.path);
+ }
+ console.log('PASS: update feed matches released materials; every released week is navigable and the latest week lists all its materials.');
  console.log('PASS: prediction, code completion, debugging, keyboard block arrangement, explanations, concept prerequisites, readable assignment and release update feed.');
  await go('workspace.html');await page.setViewportSize({width:390,height:844});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.locator('#workspace-editor').focus();await page.keyboard.press('Tab');assert(!(await page.locator('#workspace-editor').evaluate(el=>el===document.activeElement)));
  if(process.env.SCREENSHOT_DIR){await page.evaluate(()=>{document.activeElement.blur();window.scrollTo(0,0);});await page.screenshot({path:path.join(process.env.SCREENSHOT_DIR,'studio-mobile.png'),fullPage:true});}
