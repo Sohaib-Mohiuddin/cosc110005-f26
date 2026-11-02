@@ -12,10 +12,10 @@
 # 3. Save the first matching index and stop.
 
 roster = ["Alex", "Sam", "Jordan", "Sam"]
-target = "Sam"
+target = "Jordan"
 found_index = -1
 for index in range(len(roster)):
-    if roster[index] == target:
+    if roster[index].upper() == target.upper():
         found_index = index
         break
 if found_index == -1:
