@@ -11,6 +11,10 @@ withSite(async({browser,base})=>{
  const menu=page.locator('.menu-toggle');
  const sidebar=page.locator('#course-navigation');
  const noOverflow=async label=>assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),label);
+ async function expectFocus(selector){
+  try{await page.waitForFunction(selector=>document.querySelector(selector)===document.activeElement,selector);}
+  catch(error){console.error('Responsive focus diagnostic:',await page.evaluate(()=>({focused:document.activeElement?.id||document.activeElement?.tagName,width:innerWidth,mode:document.body.dataset.navigation,layout:document.body.dataset.layout,sidebarInert:document.querySelector('#course-navigation').inert,menuDisplay:getComputedStyle(document.querySelector('.menu-toggle')).display})));throw error;}
+ }
  async function section(name){
   assert.deepEqual((await primary.getByRole('link').allTextContents()).map(text=>text.trim()),['Course','Assignments','Practice','Workspace','My Study']);
   assert.equal(await primary.locator('[aria-current="true"]').textContent(),name);
@@ -99,32 +103,38 @@ withSite(async({browser,base})=>{
  await page.locator('#workspace-editor').focus();await page.keyboard.press('Tab');
  assert(!(await page.locator('#workspace-editor').evaluate(element=>element===document.activeElement)));
  await noOverflow('mobile editor with selected project file');
+ await page.setViewportSize({width:1440,height:1000});
+ await primary.getByRole('link',{name:'Workspace',exact:true}).focus();
+ await page.getByRole('heading',{name:'Python workspace',exact:true}).click();
+ await page.setViewportSize({width:390,height:844});
+ await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+ assert(!(await menu.evaluate(element=>element===document.activeElement)),'Clicking into page content must clear stale navigation focus');
  await menu.click();await page.setViewportSize({width:1440,height:1000});
- await page.waitForFunction(()=>document.querySelector('#primary-navigation [aria-current="true"]')===document.activeElement);
- await page.setViewportSize({width:390,height:844});await page.waitForFunction(()=>document.querySelector('.menu-toggle')===document.activeElement);
+ await expectFocus('#primary-navigation [aria-current="true"]');
+ await page.setViewportSize({width:390,height:844});await expectFocus('.menu-toggle');
  for(let crossing=0;crossing<3;crossing++){
   await page.setViewportSize({width:1440,height:1000});
-  await page.waitForFunction(()=>document.querySelector('#primary-navigation [aria-current="true"]')===document.activeElement);
+  await expectFocus('#primary-navigation [aria-current="true"]');
   await page.setViewportSize({width:390,height:844});
-  await page.waitForFunction(()=>document.querySelector('.menu-toggle')===document.activeElement);
+  await expectFocus('.menu-toggle');
  }
  await go('view/week-3-demos/01_explore_data_types.py.html');await page.setViewportSize({width:1440,height:1000});
  await sidebar.locator('[aria-current="page"]').focus();
  await page.waitForFunction(()=>document.querySelector('#course-navigation [aria-current="page"]')===document.activeElement);
  await page.setViewportSize({width:390,height:844});
- await page.waitForFunction(()=>document.querySelector('.menu-toggle')===document.activeElement);
+ await expectFocus('.menu-toggle');
  await page.setViewportSize({width:1440,height:1000});
- await page.waitForFunction(()=>document.querySelector('#primary-navigation [aria-current="true"]')===document.activeElement);
+ await expectFocus('#primary-navigation [aria-current="true"]');
  await page.locator('#section-toggle').focus();await page.setViewportSize({width:390,height:844});
- await page.waitForFunction(()=>document.querySelector('.menu-toggle')===document.activeElement);
+ await expectFocus('.menu-toggle');
  await go('workspace.html');await page.setViewportSize({width:1440,height:1000});await page.locator('#workspace-editor').focus();
  await page.waitForFunction(()=>document.querySelector('#workspace-editor')===document.activeElement);
  await page.setViewportSize({width:390,height:844});
  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
  assert(await page.locator('#workspace-editor').evaluate(element=>element===document.activeElement),'Resize must preserve focus in an editor that stays available');
  await menu.focus();await page.setViewportSize({width:1440,height:1000});
- await page.waitForFunction(()=>document.querySelector('#primary-navigation [aria-current="true"]')===document.activeElement);
- await page.setViewportSize({width:390,height:844});await page.waitForFunction(()=>document.querySelector('.menu-toggle')===document.activeElement);
+ await expectFocus('#primary-navigation [aria-current="true"]');
+ await page.setViewportSize({width:390,height:844});await expectFocus('.menu-toggle');
  if(process.env.SCREENSHOT_DIR){await page.screenshot({path:path.join(process.env.SCREENSHOT_DIR,'navigation-workspace-mobile.png'),fullPage:true});await go('index.html');await menu.click();await page.screenshot({path:path.join(process.env.SCREENSHOT_DIR,'navigation-drawer-mobile.png')});await page.keyboard.press('Escape');await page.setViewportSize({width:1440,height:1000});await page.screenshot({path:path.join(process.env.SCREENSHOT_DIR,'navigation-desktop.png'),fullPage:true});}
  const staticContext=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844},serviceWorkers:'block'});
  const staticPage=await staticContext.newPage();await staticPage.goto(base);

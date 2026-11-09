@@ -13,7 +13,6 @@
   const mobile = window.matchMedia('(max-width: 1000px)');
   let collapsed = C.read('navigation', {}).collapsed === true;
   let open = false;
-  let appliedMobile = mobile.matches;
   let lastFocus = null;
   document.body.classList.add('js-navigation');
 
@@ -21,8 +20,10 @@
   document.addEventListener('focusin', event => {
     if (![document.body, document.documentElement].includes(event.target)) lastFocus = event.target;
   });
-  document.addEventListener('focusout', event => {
-    if (!event.relatedTarget && mobile.matches === appliedMobile) lastFocus = null;
+  document.addEventListener('pointerdown', event => {
+    // Resize-driven blur and media events can arrive in either order. Retain
+    // the owner until focus moves elsewhere or the user clicks outside nav.
+    if (!header.contains(event.target) && !sidebar.contains(event.target)) lastFocus = null;
   });
 
   function sync() {
@@ -50,6 +51,16 @@
     if (wasOpen && restoreFocus) menu.focus();
   }
 
+  function focusAfterLayout(target) {
+    const previous = document.activeElement;
+    target.focus({preventScroll: true});
+    if (document.activeElement !== target) requestAnimationFrame(() => {
+      if (document.activeElement === previous && !target.closest('[inert]') && target.getClientRects().length) {
+        target.focus({preventScroll: true});
+      }
+    });
+  }
+
   menu.addEventListener('click', () => {
     open = !open;
     sync();
@@ -72,12 +83,11 @@
     const wasOpen = open;
     open = false;
     sync();
-    if (mobile.matches && (focusWasInside || focusWasPrimary || focusWasCollapse)) menu.focus();
+    if (mobile.matches && (focusWasInside || focusWasPrimary || focusWasCollapse)) focusAfterLayout(menu);
     else if (!mobile.matches && (focusWasMenu || (focusWasInside || wasOpen) && (sidebar.inert || !focused?.getClientRects().length))) {
       const target = focusWasMenu || document.body.dataset.layout === 'embedded' ? primary.querySelector('[aria-current]') : collapse;
-      target.focus();
+      focusAfterLayout(target);
     }
-    appliedMobile = mobile.matches;
   });
   document.addEventListener('keydown', event => {
     if (!open || !mobile.matches) return;

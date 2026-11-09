@@ -18,3 +18,5 @@ The source records implementation and local checks before publication. The deliv
 ## Local gate evidence
 
 All 36 Python checks and all three Chromium browser suites pass. Recovery fixtures cover jobless failures, missing deployment jobs, hourly retry limits, repeated validation failures, active/healthy runs, untrusted or old heads, and main advancing during recovery. Live-verification fixtures check the commit, exact material inventory, newest-week navigation, and project-relative filenames. Both workflow files parse successfully. A read-only evaluation against the actual jobless week 9 run correctly requests recovery.
+
+The recovery workflow subsequently dispatched a replacement publication automatically. CI also exposed a resize-focus timing failure: the browser could clear focus after its media event, losing the remembered navigation owner. Focus is now retained until it moves to another control or the user clicks into page content; handoff can wait one layout frame. Navigation checks cover ordinary pointer blur as well as resize recovery and print focused-control diagnostics on failure.
