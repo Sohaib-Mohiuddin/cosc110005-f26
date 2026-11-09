@@ -38,6 +38,8 @@ class StudioTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             site = Site(ROOT, Path(directory)); site.build()
             manifest = json.loads((site.out / 'offline-manifest.json').read_text())
+            data = json.loads((site.out / 'study-data.json').read_text())
+            self.assertEqual(data['source_commit'], subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip())
             self.assertTrue(manifest['packs'])
             for url in manifest['shell'] + [url for pack in manifest['packs'] for url in pack['urls']]:
                 self.assertFalse(urlsplit(url).scheme)

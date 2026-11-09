@@ -1,0 +1,41 @@
+name: Recover course publishing
+
+on:
+  workflow_run:
+    workflows: [Publish course site]
+    types: [completed]
+    branches: [main]
+  schedule:
+    - cron: '17,47 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: course-pages-recovery
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - name: Check out trusted main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Recover a stalled publication
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COURSE_SITE_URL: ${{ vars.COURSE_SITE_URL }}
+        run: python site/publishing.py recover

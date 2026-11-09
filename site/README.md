@@ -71,6 +71,10 @@ Repository **Settings → Pages → Build and deployment → Source** must be **
 
 If a committed week is missing from the live site, check the **Publish course site** run for that commit first. A failed validation leaves the previous successful deployment online. Release checks must compare navigation and update links against the generated released-material inventory; do not permanently classify a numbered week as unpublished. Isolated test fixtures can still include untracked future weeks to verify that private materials stay excluded.
 
+**Recover course publishing** checks after publication runs finish and every 30 minutes (at minutes 17 and 47 UTC). It checks trusted runs for the current `main` commit, leaves active runs alone, and requests a fresh publication when one stalled. Fresh dispatches also handle GitHub internal errors that have no re-runnable jobs. Recovery allows at most three publication runs per commit per hour; repeated failures in required validation stop after three runs until the source is fixed. Infrastructure failures can retry after the cooldown. GitHub service and scheduler delays can still delay recovery.
+
+`study-data.json` includes `source_commit`. After deployment, `site/publishing.py verify` checks that the public commit, complete released-material inventory, homepage, and newest week links match the checkout. It tolerates short cache-propagation delays. Recovery does not treat a failed live-verification gate as successful merely because the commit marker appeared. All existing Python and browser gates still run before every publication; no student code is changed by recovery. For a custom domain, set the repository variable `COURSE_SITE_URL` to its HTTPS base URL. Recovery can also be started manually from its Actions page.
+
 ## Site files
 
 - `site/course.json`: course details and optional weekly presentation.

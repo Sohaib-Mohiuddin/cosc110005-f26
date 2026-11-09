@@ -61,7 +61,12 @@ class Studio:
             topic['materials'] = [item['path'] for item in self.site.files if any(fnmatch.fnmatch(item['path'], pattern) for pattern in topic.get('patterns', []))]
             topic['prerequisites'] = [key for key in topic.get('prerequisites', []) if any(other['id'] == key for other in self.topics)]
             topics.append(topic)
-        data = {'materials': items, 'topics': topics, 'activities': self.activities, 'reference': self.read('reference.json', [])}
+        source_commit = None
+        if (self.site.root / '.git').exists():
+            result = subprocess.run(['git', '-C', str(self.site.root), 'rev-parse', '--verify', 'HEAD'], capture_output=True, text=True)
+            if result.returncode == 0:
+                source_commit = result.stdout.strip()
+        data = {'source_commit': source_commit, 'materials': items, 'topics': topics, 'activities': self.activities, 'reference': self.read('reference.json', [])}
         (self.site.out / 'study-data.json').write_text(json_script(data), encoding='utf-8')
 
     def workspace(self):

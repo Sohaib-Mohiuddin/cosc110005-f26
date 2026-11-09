@@ -56,15 +56,29 @@ jobs:
     if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
+      contents: read
       pages: write
       id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Check out published source
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Publish website
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify live released content
+        env:
+          COURSE_SITE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: python site/publishing.py verify
