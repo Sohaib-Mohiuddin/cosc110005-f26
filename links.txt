@@ -23,6 +23,9 @@ Week 3 — Data types: integers, floats, strings, and Booleans (GeeksforGeeks) |
 Week 3 — Type conversion and casting (GeeksforGeeks) | https://www.geeksforgeeks.org/python/type-casting-in-python/
 Week 3 — Keyboard input and printed output (GeeksforGeeks) | https://www.geeksforgeeks.org/python/input-and-output-in-python/
 Week 3 — Arithmetic operators: division, remainder, and powers (GeeksforGeeks) | https://www.geeksforgeeks.org/python/python-arithmetic-operators/
+Week 3 — Modulo (%): remainders, divisibility, and interactive questions (Runestone) | https://runestone.academy/ns/books/published/py4eint/variables_modulus-operator.html
+Week 3 — Modulo in practice: even/odd numbers and unit conversions (Real Python) | https://realpython.com/python-modulo-operator/#python-modulo-operator-in-practice
+Week 3 — Practice modulo and floor division in a coding challenge (W3Schools) | https://www.w3schools.com/python/python_challenges_operators_basics.asp
 Week 3 — Operator precedence and parentheses (GeeksforGeeks) | https://www.geeksforgeeks.org/python/precedence-and-associativity-of-operators-in-python/
 Week 3 — Strings: indexing, concatenation, and repetition (GeeksforGeeks) | https://www.geeksforgeeks.org/python/python-string/
 Week 3 — Cleaning strings and changing case with string methods (GeeksforGeeks) | https://www.geeksforgeeks.org/python/python-string-methods/
