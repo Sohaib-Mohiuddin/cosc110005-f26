@@ -19,6 +19,7 @@ def read_group_size():
         except ValueError:
             print("Enter a whole number.")
             continue
+        
         if 1 <= size <= 10:
             return size
         print("Choose a size from 1 to 10.")

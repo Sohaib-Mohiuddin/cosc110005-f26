@@ -17,7 +17,7 @@ def rectangle_area(length, width):
 
 
 if __name__ == "__main__":
-    area = rectangle_area(4, 3)
+    area = rectangle_area(4, 10)
     setup_cost = area * 5
     print(f"Area: {area} square metres")
     print(f"Example setup cost: ${setup_cost:.2f}")
