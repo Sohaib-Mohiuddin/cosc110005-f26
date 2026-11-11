@@ -11,12 +11,13 @@
 # 2. Call it for two durations.
 # 3. Unpack each returned pair and display it.
 
-from study_helpers import split_minutes
+import study_helpers
+import math
 
 
 def main():
     for duration in [135, 60]:
-        hours, minutes = split_minutes(duration)
+        hours, minutes = study_helpers.split_minutes(duration)
         print(f"{duration} minutes = {hours}h {minutes:02d}m")
 
 
