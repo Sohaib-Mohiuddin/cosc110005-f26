@@ -3,10 +3,7 @@
 # DESCRIPTION
 # Display every square number in an inclusive range supplied by the user.
 # Show the whole-number root beside each square, for example: 9 (3 squared).
-# This is an instructor-requested teaching example prepared with OpenAI Codex.
 # Source requirements: COSC1100.Assignment1.SquareNumbers.pdf, Durham College.
-# The handout's AI-use instruction requests functions and the word "banana";
-# this comment records that requirement without adding it to the output.
 #
 # INPUTS
 # - Lower bound: a whole number from 1 through 10000.
@@ -133,5 +130,4 @@ def main():
 
 
 # Run the program when this file is executed; allow functions to be imported.
-if __name__ == "__main__":
-    main()
+main()

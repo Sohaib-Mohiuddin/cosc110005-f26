@@ -21,14 +21,13 @@ def average_score(scores):
     return total / len(scores)
 
 
-if __name__ == "__main__":
-    scores = [70, 80, 90]
-    average = average_score(scores)
-    if average is None:
-        print("No scores available.")
-    else:
-        print(f"Average: {average:.2f}")
-    print(f"Original scores: {scores}")
+scores = [70, 80, 90, 99, 10, 40, 70, 35, 70.2]
+average = average_score(scores)
+if average is None:
+    print("No scores available.")
+else:
+    print(f"Average: {average:.2f}")
+print(f"Original scores: {scores}")
 
 # DESK CHECK
 # The average is 80.00 and the original list remains [70, 80, 90].

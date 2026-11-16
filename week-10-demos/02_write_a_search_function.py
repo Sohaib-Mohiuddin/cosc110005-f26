@@ -21,7 +21,7 @@ def find_index(items, target):
 
 if __name__ == "__main__":
     supplies = ["pen", "notebook", "pen"]
-    position = find_index(supplies, "pen")
+    position = find_index(supplies, "notebookk")
     # Index 0 is a match, even though bool(0) is False.
     if position is None:
         print("Item not found.")
