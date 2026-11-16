@@ -4,3 +4,4 @@ __pycache__/
 # Generated course website
 _site/
 site/browser-tests/node_modules/
+test/
