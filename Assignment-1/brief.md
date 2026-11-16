@@ -103,3 +103,7 @@ The handout states that failure to observe these terms is subject to Durham Coll
 ## Submission reminder
 
 Submit your Python solution and documented plan to the appropriate DC Connect assignment folder. Confirm the due date and any additional instructor directions on DC Connect.
+
+## Worked example for classroom review
+
+The [worked solution and teaching notes](worked_solution.md) include the design, sample runs, a trace table, and a test plan. The [documented Python solution](square_numbers_solution.py) includes its plan and pseudocode in comments above the code and can be run in the browser. Follow your instructor's directions when using this example.

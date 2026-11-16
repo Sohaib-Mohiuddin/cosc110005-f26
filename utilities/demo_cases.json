@@ -1,4 +1,57 @@
 {
+  "Assignment-1/square_numbers_solution.py": {
+    "mode": "console",
+    "cases": [
+      {
+        "label": "Handout example: 4 through 120",
+        "stdin": "4\n120\n\n",
+        "contains": [
+          "Square Numbers Between 4 and 120",
+          "4 (2 squared)\n9 (3 squared)\n16 (4 squared)\n25 (5 squared)\n36 (6 squared)\n49 (7 squared)\n64 (8 squared)\n81 (9 squared)\n100 (10 squared)",
+          "Press Enter to exit..."
+        ]
+      },
+      {
+        "label": "A valid range with no squares",
+        "stdin": "10\n15\n\n",
+        "contains": [
+          "Square Numbers Between 10 and 15",
+          "No square numbers were found in this range.",
+          "Press Enter to exit..."
+        ]
+      },
+      {
+        "label": "Equal square bounds are inclusive",
+        "stdin": "16\n16\n\n",
+        "contains": [
+          "Square Numbers Between 16 and 16",
+          "16 (4 squared)",
+          "Press Enter to exit..."
+        ]
+      },
+      {
+        "label": "The maximum bound is included",
+        "stdin": "10000\n10000\n\n",
+        "contains": [
+          "Square Numbers Between 10000 and 10000",
+          "10000 (100 squared)",
+          "Press Enter to exit..."
+        ]
+      },
+      {
+        "label": "Invalid inputs are retried before results",
+        "stdin": "Chicken\n4.5\n10001\n4\n3\n120\n\n",
+        "contains": [
+          "Invalid input: Please enter a whole number.",
+          "Invalid input: Please enter a number between 1 and 10000.",
+          "Invalid input: Please enter a number between 4 and 10000.",
+          "Square Numbers Between 4 and 120",
+          "4 (2 squared)\n9 (3 squared)\n16 (4 squared)\n25 (5 squared)\n36 (6 squared)\n49 (7 squared)\n64 (8 squared)\n81 (9 squared)\n100 (10 squared)",
+          "Press Enter to exit..."
+        ]
+      }
+    ]
+  },
   "week-2-demos/01_plan_an_event_budget.py": {
     "mode": "console",
     "cases": [
