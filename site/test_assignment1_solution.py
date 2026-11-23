@@ -19,7 +19,11 @@ def load_solution():
     spec = importlib.util.spec_from_file_location(
         'assignment1_solution', SOLUTION)
     module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    # Support teaching scripts that call main() directly when imported.
+    # Supply a valid run so discovery never depends on CI keyboard input.
+    with patch('builtins.input', side_effect=['1', '1', '']):
+        with contextlib.redirect_stdout(io.StringIO()):
+            spec.loader.exec_module(module)
     return module
 
 
