@@ -57,3 +57,57 @@ Week 5 — Menu choices and input: command-line calculator section (GeeksforGeek
 
 # Practice across weeks 2–5
 Weeks 2–5 — Interactive Python exercises: variables, input, decisions, and loops (University of Waterloo) | https://cscircles.cemc.uwaterloo.ca/
+
+# Week 6: Iteration continued and midterm practice
+Week 6 — Trace nested loops and practise multiplication tables (University of Helsinki) | https://programming-26.mooc.fi/part-3/3-more-loops/
+Week 6 — Retry invalid numeric input in a loop (Python tutorial) | https://docs.python.org/3/tutorial/errors.html#handling-exceptions
+Week 6 — Midterm practice: trace loops and predict the output (University of Waterloo) | https://cscircles.cemc.uwaterloo.ca/7c-loops/
+
+# Week 7: Mid-semester review
+Week 7 — Review input, conversion, and formatting (Python tutorial) | https://docs.python.org/3/tutorial/inputoutput.html#fancier-output-formatting
+Week 7 — Review conditionals and Boolean decisions (Harvard CS50P) | https://cs50.harvard.edu/python/notes/1/
+Week 7 — Review while loops, for loops, and input checks (Harvard CS50P) | https://cs50.harvard.edu/python/notes/2/
+
+# Week 8: Lists and two-dimensional data
+Week 8 — List methods: add, remove, find, and sort (Python tutorial) | https://docs.python.org/3/tutorial/datastructures.html#more-on-lists
+Week 8 — Index, slice, and update lists (Python tutorial) | https://docs.python.org/3/tutorial/introduction.html#lists
+Week 8 — Work with rows and columns in nested lists (Python tutorial) | https://docs.python.org/3/tutorial/datastructures.html#nested-list-comprehensions
+
+# Week 9: Functions
+Week 9 — Function definitions, parameters, and return values (Python tutorial) | https://docs.python.org/3/tutorial/controlflow.html#defining-functions
+Week 9 — Default arguments and function documentation (Python tutorial) | https://docs.python.org/3/tutorial/controlflow.html#more-on-defining-functions
+Week 9 — Import a function and use the main guard (Python tutorial) | https://docs.python.org/3/tutorial/modules.html#executing-modules-as-scripts
+
+# Week 10: Lists and functions continued
+Week 10 — Loop over positions and values with enumerate (Python tutorial) | https://docs.python.org/3/tutorial/datastructures.html#looping-techniques
+Week 10 — Trace selection sort with an animation (University of San Francisco) | https://www.cs.usfca.edu/~galles/visualization/ComparisonSort.html
+Week 10 — Sort a copy or modify a list in place (Python sorting guide) | https://docs.python.org/3/howto/sorting.html#sorting-basics
+Week 10 — Compare assignment, shallow copies, and deep copies (Python reference) | https://docs.python.org/3/library/copy.html
+
+# Week 11: Tkinter user interfaces
+Week 11 — Set up Tkinter and run a first window (Python documentation) | https://docs.python.org/3/library/tkinter.html#a-hello-world-program
+Week 11 — Form widgets: entries, buttons, and choices (TkDocs) | https://tkdocs.com/tutorial/widgets.html
+Week 11 — Bootstrap themes and widget styles for Tkinter (ttkbootstrap) | https://www.ttkbootstrap.org/en/latest/user-guide/getting-started/quickstart.html
+
+# Week 12: User interfaces continued
+Week 12 — Resize forms with grid weights and widget alignment (TkDocs) | https://tkdocs.com/tutorial/grid.html
+Week 12 — Schedule callbacks with after and keep the window responsive (TkDocs) | https://tkdocs.com/tutorial/eventloop.html
+Week 12 — Work with table rows, selections, and scrollbars (Python ttk reference) | https://docs.python.org/3/library/tkinter.ttk.html#treeview
+
+# Week 13: Testing programs and interfaces
+Week 13 — Write and run unit tests with unittest (Python documentation) | https://docs.python.org/3/library/unittest.html#basic-example
+Week 13 — Practise testing functions with normal and boundary inputs (Harvard CS50P) | https://cs50.harvard.edu/python/notes/5/
+Week 13 — Plan a usability test and observe people completing tasks (GOV.UK Service Manual) | https://www.gov.uk/service-manual/user-research/using-moderated-usability-testing
+
+# Week 14: Cumulative review
+Week 14 — Revisit core Python concepts by topic (Python tutorial) | https://docs.python.org/3/tutorial/
+Week 14 — Review functions, lists, strings, and loops with exercises (University of Helsinki) | https://programming-26.mooc.fi/part-4/
+Week 14 — Review error messages, exceptions, and debugging (Python tutorial) | https://docs.python.org/3/tutorial/errors.html
+
+# Final exam review practice
+Final exam review — Course practice lab: predict, complete, order, and debug Python | https://sohaib-mohiuddin.github.io/cosc110005-f26/practice.html
+Final exam review — Trace variables, calls, and local scope (University of Waterloo) | https://cscircles.cemc.uwaterloo.ca/11b-how-functions-work/
+Final exam review — Practise conditionals and boundary cases (Harvard CS50P) | https://cs50.harvard.edu/python/psets/1/
+Final exam review — Practise loops and string processing (Harvard CS50P) | https://cs50.harvard.edu/python/psets/2/
+Final exam review — Practise writing tests for functions (Harvard CS50P) | https://cs50.harvard.edu/python/psets/5/
+Final exam review — Trace an end-to-end Tkinter form and callback (TkDocs) | https://tkdocs.com/tutorial/firstexample.html

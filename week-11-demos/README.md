@@ -2,7 +2,7 @@
 
 Tkinter windows, widgets, callbacks, entry fields, choices, and forms.
 
-Five standalone Python demos for the professor to present in numerical order. Each file includes a problem, inputs and outputs, pseudocode, a desk check, and a try-it/discussion prompt.
+Six standalone Python demos for the professor to present in numerical order. Each file includes a problem, inputs and outputs, pseudocode, a desk check, and a try-it/discussion prompt.
 
 ## Run
 
@@ -12,7 +12,7 @@ From the repository root, using Python 3:
 python3 week-11-demos/01_open_a_window.py
 ```
 
-Replace the filename to run another demo. On Windows, `py` can be used in place of `python3`. No pip packages are required.
+Replace the filename to run another demo. On Windows, use `py` in place of `python3`. All six demos run with standard Tkinter. Demo 6 also supports the optional `ttkbootstrap` theme and widget styles.
 
 ## Teaching sequence
 
@@ -23,6 +23,34 @@ Replace the filename to run another demo. On Windows, `py` can be used in place 
 | [03_convert_temperature.py](03_convert_temperature.py) | Keep calculations separate from GUI callbacks |
 | [04_choose_an_activity.py](04_choose_an_activity.py) | Use radio buttons for one choice |
 | [05_build_a_registration_form.py](05_build_a_registration_form.py) | Combine labelled fields in a form |
+| [06_build_a_study_planner.py](06_build_a_study_planner.py) | Connect validation, list processing, search, sorting, and progress to an interactive dashboard |
+
+## Demo 6 — Study Session Planner
+
+Run it from the repository root using desktop Python:
+
+```bash
+python3 week-11-demos/06_build_a_study_planner.py
+```
+
+For the themed version, run `python3 -m pip install ttkbootstrap` in the same Python environment, then launch the script again. On Windows, use `py -m pip install ttkbootstrap`. See the [ttkbootstrap installation guide](https://www.ttkbootstrap.org/en/latest/user-guide/getting-started/installation.html) for virtual environment and platform instructions.
+
+| Week | What to trace in the planner |
+| --- | --- |
+| 2 | Identify inputs, processing, and outputs in the pseudocode. Trace one click from the form to the table. |
+| 3 | Convert widget text to an integer, trim titles, store a Boolean, and format the percentage. |
+| 4 | Check input bounds and compare text with Boolean conditions. Show feedback on conversion errors. |
+| 5 | Accumulate planned and completed minutes. Compare repeated button events with a console menu loop. |
+| 6 | Trace the nested selection sort and reset the per-topic accumulator. Use `continue` to skip unmatched rows. |
+| 7 | Combine validation, decisions, and totals in one workflow. Predict the outcome before trying invalid entries. |
+| 8 | Add, index, update, remove, and traverse rows in a two-dimensional list. |
+| 9 | Follow parameters, a default argument, returned values, and local variables. Compare calculation functions with callbacks. |
+| 10 | Filter into a separate index list and sort that view while retaining the plan's original order. |
+| 11 | Connect a text entry, read-only topic picker, spinbox, checkbox, scrollable table, and progress bar to callbacks. |
+
+For later review, use this project to preview Week 12's interface state and resizing, Week 13's boundary and workflow testing, and Week 14's separation of calculation from presentation. The validation, search, and summary functions can be called without opening a window.
+
+Try entering minutes `0`, `1`, `180`, and `181`. Then add two sessions, filter to the second, and mark it done. Clear the filter and check which row changed. Toggle **Shortest first** and repeat the check after removing a row. Use Tab and Enter to submit from either text field, and resize the window to see how the table grows.
 
 ## Classroom flow
 
