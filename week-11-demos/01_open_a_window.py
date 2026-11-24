@@ -16,9 +16,9 @@ from tkinter import ttk
 
 
 def main():
-    root = tk.Tk()
-    root.title('Introduce widgets and the event loop')
-    frame = ttk.Frame(root, padding=20)
+    window = tk.Tk()
+    window.title('Introduce widgets and the event loop')
+    frame = ttk.Frame(window, padding=20)
     frame.grid(row=0, column=0, sticky="nsew")
     status = tk.StringVar(value="Ready to begin.")
 
@@ -32,7 +32,7 @@ def main():
     button.grid(row=2, column=0, pady=5)
     button.focus_set()
     # mainloop below handles clicks and redraws until the window closes.
-    root.mainloop()
+    window.mainloop()
 
 
 if __name__ == "__main__":
