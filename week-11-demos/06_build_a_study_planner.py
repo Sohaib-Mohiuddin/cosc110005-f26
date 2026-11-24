@@ -90,6 +90,66 @@ def summarize(sessions):
     return planned, completed_minutes, topic_totals
 
 
+def attach_tooltips(root, hints):
+    """Show one delayed hint at a time for mouse and keyboard users."""
+    owner = None
+    pending = None
+    popup = None
+
+    def dismiss():
+        nonlocal owner, pending, popup
+        if pending is not None:
+            root.after_cancel(pending)
+            pending = None
+        if popup is not None:
+            if popup.winfo_exists():
+                popup.destroy()
+            popup = None
+        owner = None
+
+    def show(widget, text):
+        nonlocal pending, popup
+        pending = None
+        if not widget.winfo_viewable():
+            return
+
+        popup = tk.Toplevel(root)
+        popup.withdraw()
+        popup.overrideredirect(True)
+        ttk.Label(popup, text=text, padding=(8, 5), wraplength=255,
+                  relief="solid", borderwidth=1).pack()
+        popup.update_idletasks()
+
+        # Keep the hint near its control and inside the planner window.
+        right = root.winfo_rootx() + root.winfo_width()
+        bottom = root.winfo_rooty() + root.winfo_height()
+        x = min(widget.winfo_rootx(), right - popup.winfo_reqwidth())
+        y = widget.winfo_rooty() + widget.winfo_height() + 5
+        if y + popup.winfo_reqheight() > bottom:
+            y = widget.winfo_rooty() - popup.winfo_reqheight() - 5
+        popup.geometry(f"+{x}+{y}")
+        popup.deiconify()
+
+    def schedule(event, text):
+        nonlocal owner, pending
+        dismiss()
+        owner = event.widget
+        pending = root.after(500, show, owner, text)
+
+    def leave(event):
+        if event.widget is owner:
+            dismiss()
+
+    for widget, text in hints:
+        for sequence in ("<Enter>", "<FocusIn>"):
+            widget.bind(sequence, lambda event, text=text: schedule(event, text),
+                        add="+")
+        for sequence in ("<Leave>", "<FocusOut>", "<ButtonPress>",
+                         "<KeyPress>", "<Destroy>"):
+            widget.bind(sequence, leave, add="+")
+    root.bind("<Escape>", lambda event: dismiss(), add="+")
+
+
 def build_planner(root, widgets=ttk):
     """Connect Tkinter controls to the session list and its rules."""
     themed = widgets is not ttk
@@ -139,10 +199,11 @@ def build_planner(root, widgets=ttk):
     plan.columnconfigure(1, weight=1)
     plan.rowconfigure(1, weight=1)
     widgets.Label(plan, text="Search").grid(row=0, column=0, sticky="w", padx=(0, 6))
-    widgets.Entry(plan, textvariable=search_input).grid(row=0, column=1, sticky="ew")
-    widgets.Checkbutton(plan, text="Shortest first", variable=shortest_first).grid(
-        row=0, column=2, columnspan=2, sticky="e", padx=(8, 0)
-    )
+    search_entry = widgets.Entry(plan, textvariable=search_input)
+    search_entry.grid(row=0, column=1, sticky="ew")
+    sort_toggle = widgets.Checkbutton(plan, text="Shortest first",
+                                      variable=shortest_first)
+    sort_toggle.grid(row=0, column=2, columnspan=2, sticky="e", padx=(8, 0))
 
     tree = widgets.Treeview(plan, columns=("title", "topic", "minutes", "status"),
                         show="headings", selectmode="browse", height=8)
@@ -244,6 +305,21 @@ def build_planner(root, widgets=ttk):
     remove_button = widgets.Button(actions, text="Remove selected",
                                    command=remove_session, **remove_style)
     remove_button.pack(side="left")
+
+    attach_tooltips(root, [
+        (minutes_entry, f"Type a whole number from 1 to {MAX_MINUTES}, "
+                        "or use the arrows to adjust it."),
+        (search_entry, "Search session titles and topics. Clear the box to "
+                       "show every session."),
+        (sort_toggle, "Show the shortest sessions first. Turn this off to "
+                      "return to the order you added them."),
+        (toggle_button, "Select a row to mark it done. Choose Mark planned "
+                        "to undo completion."),
+        (remove_button, "Delete the selected session from the plan. "
+                        "You can add it again if needed."),
+        (progress, "Only time from completed sessions counts toward the "
+                   f"{GOAL_MINUTES}-minute goal. Search does not change the total."),
+    ])
 
     tree.bind("<<TreeviewSelect>>", selection_changed)
     search_input.trace_add("write", lambda *_: refresh())

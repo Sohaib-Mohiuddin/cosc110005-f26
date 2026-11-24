@@ -52,6 +52,8 @@ For later review, use this project to preview Week 12's interface state and resi
 
 Try entering minutes `0`, `1`, `180`, and `181`. Then add two sessions, filter to the second, and mark it done. Clear the filter and check which row changed. Toggle **Shortest first** and repeat the check after removing a row. Use Tab and Enter to submit from either text field, and resize the window to see how the table grows.
 
+Hover over a control or pause on it while tabbing to read its tooltip. Hover over the progress bar to see what counts toward the goal. Press Escape to dismiss a tooltip.
+
 ## Classroom flow
 
 1. Read the problem and ask students to identify inputs, processing, and outputs.
