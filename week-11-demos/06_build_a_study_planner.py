@@ -173,8 +173,7 @@ def build_planner(root, widgets=ttk):
     dashboard.grid(sticky="nsew")
     dashboard.columnconfigure(1, weight=1)
     dashboard.rowconfigure(1, weight=1)
-    heading = widgets.Label(dashboard, text="Study Session Planner",
-                            font=("TkDefaultFont", 19, "bold"))
+    heading = widgets.Label(dashboard, text="Study Session Planner", font=("TkDefaultFont", 19, "bold"))
     heading.grid(row=0, column=0, columnspan=2, sticky="w", pady=(0, 12))
 
     form = widgets.LabelFrame(dashboard, text="New session", padding=12)
